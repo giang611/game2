@@ -9,7 +9,7 @@
 #include"Geometric.h"
 #include"BossObject.h"
 
-baseObject duc;
+baseObject back_ground;
 TTF_Font* font_time=NULL;
 bool Initdata() {
     bool success = true;
@@ -52,12 +52,12 @@ bool Initdata() {
 }
 bool Loadanh() {
 
-    bool ret = duc.loadImg("img//2.png", g_screen);
+    bool ret = back_ground.loadImg("img//2.png", g_screen);
     if (ret == false) return false;
     return true;
 }
 void close() {
-    duc.Free();
+    back_ground.Free();
 
     SDL_DestroyRenderer(g_screen);
     g_screen = NULL;
@@ -191,7 +191,7 @@ int main(int argc, char* args[]) {
         SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
         SDL_RenderClear(g_screen);
 
-        duc.Render(g_screen, NULL);
+        back_ground.Render(g_screen, NULL);
         
         Map map = game_map.gamemap;
         player.handleBullet(g_screen);
@@ -452,7 +452,7 @@ int main(int argc, char* args[]) {
 
         
         //if (val <= Screen_WIDTH) {
-            
+            //
         //}
             SDL_RenderPresent(g_screen);
         

@@ -18,7 +18,14 @@ bool Initdata() {
         return false;
 
     }
-
+    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) 
+        {
+        success = false;
+        } 
+    g_sound_bullet[0] = Mix_LoadWAV("Explosion1.wav");
+    g_sound_bullet[1] = Mix_LoadWAV("");
+    g_sound_exp[0] = Mix_LoadWAV("");
+    g_sound_exp[1] = Mix_LoadWAV("");
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     g_window = SDL_CreateWindow("game cua toi", 
         SDL_WINDOWPOS_UNDEFINED, 
@@ -138,12 +145,12 @@ int main(int argc, char* args[]) {
     
     vector<ThreatsObject*> list_threat = MakeThreatList();
 
-    //boss threat
+
     BossObject bossObject;
     bossObject.loadImg("img//boss_object.png", g_screen);
     bossObject.set_clips();
     
-    int xposboss = 600;
+    int xposboss = 10000;
     bossObject.set_xpos(xposboss);
     bossObject.set_ypos(10);
     ExplosionObject exp_threat;
@@ -185,7 +192,7 @@ int main(int argc, char* args[]) {
 
                 is_quit = true;
             }
-            player.xulihd(g_event, g_screen);
+            player.xulihd(g_event, g_screen,g_sound_bullet);
         }
 
         SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
@@ -409,7 +416,7 @@ int main(int argc, char* args[]) {
                 }
             }
         }
-        //show game time
+    
         string str_time = "Time: ";
         Uint32 time_val = SDL_GetTicks() / 1000;
         Uint32 val_time = 300 - time_val;
@@ -451,9 +458,7 @@ int main(int argc, char* args[]) {
         
 
         
-        //if (val <= Screen_WIDTH) {
-            //
-        //}
+       
             SDL_RenderPresent(g_screen);
         
         int real_time = fps_time.getTicks();

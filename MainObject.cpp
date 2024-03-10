@@ -67,7 +67,7 @@ void mainObject::show(SDL_Renderer* des) {
 	SDL_Rect renderQuad= { rect.x,rect.y,width_frame,height_frame };
 	SDL_RenderCopy(des, object, current_clip, &renderQuad);
 }
-void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
+void mainObject::xulihd( SDL_Event event, SDL_Renderer* screen,Mix_Chunk* bullet_sound[2]) {
 
 	if (event.type == SDL_KEYDOWN) {
 		switch (event.key.keysym.sym) {
@@ -116,8 +116,9 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 	 if (event.type == SDL_MOUSEBUTTONDOWN) {
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			BulletObject* a = new BulletObject();
-			a->set_bullet_type(a->LASER_BULLET);
+			a->set_bullet_type(a->SPHERE_BULLET);
 			a->LoadImgBullet(screen);
+			Mix_PlayChannel(-1, bullet_sound[0], 0);
 			if (status == WALK_LEFT) 
 			{
 				a->set_bullet_dir(a->DIR_LEFT);

@@ -16,7 +16,7 @@ public:
 	};
 	bool LoadImg(string path, SDL_Renderer* screen);
 	void show(SDL_Renderer* des);
-	void xulihd(SDL_Event event, SDL_Renderer* screen);
+	void xulihd(SDL_Event event, SDL_Renderer* screen,Mix_Chunk* bullet_sound[2]);
 	void set_clip();
 	void doPlayer(Map& map_data);
 	void checktoMap(Map& map_data);

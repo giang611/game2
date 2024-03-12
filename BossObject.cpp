@@ -10,7 +10,7 @@ BossObject::BossObject() {
 	think_time = 0;
 	map_x = 0;
 	map_y = 0;
-	hp = 50;
+	hp = 10;
 }
 BossObject::~BossObject() {
 

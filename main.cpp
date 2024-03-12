@@ -18,14 +18,7 @@ bool Initdata() {
         return false;
 
     }
-    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) 
-        {
-        success = false;
-        } 
-    g_sound_bullet[0] = Mix_LoadWAV("Explosion1.wav");
-    g_sound_bullet[1] = Mix_LoadWAV("");
-    g_sound_exp[0] = Mix_LoadWAV("");
-    g_sound_exp[1] = Mix_LoadWAV("");
+
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     g_window = SDL_CreateWindow("game cua toi", 
         SDL_WINDOWPOS_UNDEFINED, 
@@ -145,14 +138,18 @@ int main(int argc, char* args[]) {
     
     vector<ThreatsObject*> list_threat = MakeThreatList();
 
-
+    //boss threat
     BossObject bossObject;
+    int hpboss = bossObject.getHp();
     bossObject.loadImg("img//boss_object.png", g_screen);
     bossObject.set_clips();
     
-    int xposboss = 10000;
+    int xposboss = 600;
+    int yposboss = 10;
+   
+    
     bossObject.set_xpos(xposboss);
-    bossObject.set_ypos(10);
+    bossObject.set_ypos(yposboss);
     ExplosionObject exp_threat;
     bool tRet = exp_threat.loadImg("img//exp3.png", g_screen);
     
@@ -192,7 +189,7 @@ int main(int argc, char* args[]) {
 
                 is_quit = true;
             }
-            player.xulihd(g_event, g_screen,g_sound_bullet);
+            player.xulihd(g_event, g_screen);
         }
 
         SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
@@ -223,22 +220,43 @@ int main(int argc, char* args[]) {
 
         player_money.SetPos(Screen_WIDTH*0.5-300, 8);
         player_money.Show(g_screen);
-       
-        bossObject.setMapXY(map.start_x, map.start_y);
-        bossObject.DoPlayer(map);
-        bossObject.MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT);
-        bossObject.Show(g_screen);
+        if (hpboss > 0) {
+            bossObject.setMapXY(map.start_x, map.start_y);
+            bossObject.DoPlayer(map);
+            bossObject.MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT);
+            bossObject.Show(g_screen);
+        }
         bool bcol3 = false;
         bool bcol4 = false;
         bool bcol5 = false;
+        int width_exp_frame = exp_main.get_frame_width();
+        int height_exp_frame = exp_main.get_frame_height();
         bcol3 = SDLCommonfunc::CheckCollision(player.getRectframe(), bossObject.getRectframe());
         for (int i = 0; i < player.get_bullet_list().size(); i++)
         {
+            if (hpboss <= 0) break;
             BulletObject* bulletp = player.get_bullet_list().at(i);
             bcol5 = SDLCommonfunc::CheckCollision(bulletp->getRect(), bossObject.getRectframe());
             if(bcol5)
             {
-               int hpboss= bossObject.getHp();
+               
+               hpboss--;
+               for (int ex = 0; ex < 8; ex++)
+               {
+                   int x_pos = bulletp->getRect().x;
+                   int y_pos = bulletp->getRect().y;
+
+                   exp_main.set_frame(ex);
+                   exp_main.setRect(x_pos, y_pos);
+                   exp_main.show(g_screen);
+                   SDL_RenderPresent(g_screen);
+
+               }
+               player.RemoveBullet(i);
+               if (hpboss == 0) {
+                   
+
+               }
 
 
 
@@ -255,8 +273,7 @@ int main(int argc, char* args[]) {
             }
 
          }
-        int width_exp_frame = exp_main.get_frame_width();
-        int height_exp_frame = exp_main.get_frame_height();
+       
         if (bcol3 == true||bcol4==true) {
             num_die++;
             for (int ex = 0; ex < 4; ex++)
@@ -375,8 +392,7 @@ int main(int argc, char* args[]) {
 
             }
         }
-        int frame_exp_width = exp_threat.get_frame_width();
-        int frame_exp_height = exp_threat.get_frame_height();
+        
         vector<BulletObject*> bullet_arr = player.get_bullet_list();
         for (int r = 0; r < bullet_arr.size(); r++)
         {
@@ -401,6 +417,8 @@ int main(int argc, char* args[]) {
                             mark_val++;
                             for (int ex = 0; ex < 8; ex++)
                             {
+                                int frame_exp_width = exp_threat.get_frame_width();
+                                int frame_exp_height = exp_threat.get_frame_height();
                                 int x_pos = p_bullet->getRect().x - frame_exp_width * 0.5;
                                 int y_pos = p_bullet->getRect().y - frame_exp_height * 0.5;
                                 exp_threat.set_frame(ex);
@@ -416,7 +434,7 @@ int main(int argc, char* args[]) {
                 }
             }
         }
-    
+        //show game time
         string str_time = "Time: ";
         Uint32 time_val = SDL_GetTicks() / 1000;
         Uint32 val_time = 300 - time_val;
@@ -458,7 +476,9 @@ int main(int argc, char* args[]) {
         
 
         
-       
+        //if (val <= Screen_WIDTH) {
+            //
+        //}
             SDL_RenderPresent(g_screen);
         
         int real_time = fps_time.getTicks();

@@ -64,48 +64,6 @@ void BossObject::Show(SDL_Renderer* screen)
 
 
 
-void BossObject::DoPlayer(Map& g_map)
-{
-	if (think_time == 0)
-	{
-		x_val = 0;
-		y_val += GRAVITY_SPEED;
-
-		if (y_val >= MAX_FALL_SPEED)
-		{
-			y_val = MAX_FALL_SPEED;
-		}
-		if (input_type.left == 1)
-		{
-			x_val -= PLAYER_SPEED;
-		}
-		else if (input_type.right == 1)
-		{
-			x_val += PLAYER_SPEED;
-		}
-		if (input_type.jump == 1)
-		{
-			if (on_ground == 1)
-			{
-				y_val = -PLAYER_HIGHT_VAL;
-			}
-			input_type.jump = 0;
-		}
-		CheckToMap(g_map);
-	}
-
-	if (think_time > 0)
-	{
-		think_time--;
-		if (think_time == 0)
-		{
-			InitPlayer();
-		}
-	}
-
-
-
-}
 
 void BossObject::InitPlayer()
 {
@@ -250,9 +208,16 @@ void BossObject::MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_
 				p_bullet->xuliMove(x_limit, y_limit);
 				p_bullet->Render(des);
 			}
-			else {
+			else 
+			{
 				p_bullet->Free();
 				bullet_list.erase(bullet_list.begin() + i);
+				
+				if (p_bullet != NULL)
+				{
+					delete p_bullet;
+					p_bullet = NULL;
+				}
 			}
 		}
 	}
@@ -275,4 +240,46 @@ SDL_Rect BossObject::getRectframe()
 	rectt.w = width_frame;
 	rectt.h = height_frame;
 	return rectt;
+}
+void BossObject::DoPlayer(Map& g_map)
+{
+	if (think_time == 0)
+	{
+		x_val = 0;
+		y_val += GRAVITY_SPEED;
+
+		if (y_val >= MAX_FALL_SPEED)
+		{
+			y_val = MAX_FALL_SPEED;
+		}
+		if (input_type.left == 1)
+		{
+			x_val -= PLAYER_SPEED;
+		}
+		else if (input_type.right == 1)
+		{
+			x_val += PLAYER_SPEED;
+		}
+		if (input_type.jump == 1)
+		{
+			if (on_ground == 1)
+			{
+				y_val = -PLAYER_HIGHT_VAL;
+			}
+			input_type.jump = 0;
+		}
+		CheckToMap(g_map);
+	}
+
+	if (think_time > 0)
+	{
+		think_time--;
+		if (think_time == 0)
+		{
+			InitPlayer();
+		}
+	}
+
+
+
 }

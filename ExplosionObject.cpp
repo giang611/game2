@@ -10,6 +10,18 @@ ExplosionObject::ExplosionObject()
 ExplosionObject::~ExplosionObject() {
 
 }
+void ExplosionObject::show(SDL_Renderer* des) {
+	SDL_Rect* currentclip = &frame_clip_[frame];
+	SDL_Rect render_quad = { rect.x,rect.y,frame_width__,frame_height__ };
+	if (currentclip != NULL)
+	{
+		render_quad.w = currentclip->w;
+		render_quad.h = currentclip->h;
+
+	}
+	SDL_RenderCopy(des, object, currentclip, &render_quad);
+
+}
 
 bool ExplosionObject::loadImg(string path, SDL_Renderer* screen)
 {
@@ -31,16 +43,4 @@ void ExplosionObject::set_clip() {
 			frame_clip_[i].h = frame_height__;
 		}
 	}
-}
-void ExplosionObject::show(SDL_Renderer* des) {
-	SDL_Rect* currentclip = &frame_clip_[frame];
-	SDL_Rect render_quad = { rect.x,rect.y,frame_width__,frame_height__ };
-	if (currentclip != NULL)
-	{
-		render_quad.w = currentclip->w;
-		render_quad.h = currentclip->h;
-
-	}
-	SDL_RenderCopy(des, object, currentclip, &render_quad);
-
 }

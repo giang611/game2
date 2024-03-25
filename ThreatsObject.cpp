@@ -1,6 +1,6 @@
 #include"ThreatsObject.h"
 #include "MainObject.h"
-
+#include"baseObject.h"
 ThreatsObject::ThreatsObject() {
 	width_frame_ = 0;
 	height_frame_ = 0;
@@ -71,7 +71,7 @@ void ThreatsObject::show(SDL_Renderer* des)
 	
 
 
-void ThreatsObject::doPlayer(Map& gmap) 
+void ThreatsObject::doPlayer(Map& gmap)
 {
 	if (come_back_time_ == 0)
 	{
@@ -117,106 +117,7 @@ void ThreatsObject::doPlayer(Map& gmap)
 	}
 
 }
-void ThreatsObject::checktoMap(Map& map_data) 
-{
-	int x1 = 0;
-	int x2 = 0;
-	int y1 = 0;
-	int y2 = 0;
 
-	int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
-
-	x1 = (x_pos_ + x_val_) / TILE_SIZE;
-	x2 = (x_pos_ + x_val_ + width_frame_ - 1) / TILE_SIZE;
-
-	y1 = y_pos_ / TILE_SIZE;
-	y2 = (y_pos_ + height_min - 1) / TILE_SIZE;
-
-	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) 
-	{
-
-		if (x_val_ > 0) {
-			int val1 = map_data.tile[y1][x2];
-			int val2 = map_data.tile[y2][x2];
-
-			if ((val1 != 0 && val1 != STATE_MONNEY) || (val2 != 0 && val2 != STATE_MONNEY)) {
-
-				x_val_ = 0;
-				
-
-
-			}
-		}
-
-
-
-		else if (x_val_ < 0) {
-			int val1 = map_data.tile[y1][x1];
-			int val2 = map_data.tile[y2][x1];
-
-			if ((val1 != 0 && val1 != STATE_MONNEY) || (val2 != 0 && val2 != STATE_MONNEY)) {
-				
-				x_val_ = 0;
-
-			}
-
-		}
-
-
-	}
-
-	int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
-	x1 = x_pos_ / TILE_SIZE;
-	x2 = (x_pos_ + width_min) / TILE_SIZE;
-
-	y1 = (y_pos_ + y_val_) / TILE_SIZE;
-	y2 = (y_pos_ + y_val_ + height_frame_ - 1) / TILE_SIZE;
-
-	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
-		if (y_val_ > 0) {
-			int val1 = map_data.tile[y2][x1];
-			int val2 = map_data.tile[y2][x2];
-
-			if ((val1 != 0&& val1 != STATE_MONNEY) || (val2 != 0 && val2 != STATE_MONNEY)) {
-
-				y_val_ = 0;
-				on_ground_ = true;
-			}
-
-		}
-		else if (y_val_ < 0)
-		{
-			int val1 = map_data.tile[y1][x1];
-			int val2 = map_data.tile[y1][x2];
-
-
-
-			if ((val1 != 0 && val1 != STATE_MONNEY) || (val2 != 0 && val2 != STATE_MONNEY))
-
-			{
-				y_val_ = 0;
-			}
-
-
-		}
-	
-
-	}
-
-	x_pos_ += x_val_;
-	y_pos_ += y_val_;
-
-	if (x_pos_ < 0) { x_pos_ = 0; }
-	else if (x_pos_ + width_frame_ > map_data.max_x) {
-
-		x_pos_ = map_data.max_x - width_frame_ - 1;
-	}
-	if (y_pos_ > map_data.max_y) {
-		come_back_time_ = 60;
-	}
-
-
-}
 void ThreatsObject::impTypeMove(SDL_Renderer* screen)
 {
 	if (type_move_ == STATIC_THREAT) 
@@ -263,12 +164,119 @@ void ThreatsObject::InitBullet(BulletObject* p_bullet,SDL_Renderer* screen)
 		p_bullet->LoadImgBullet(screen);
 		p_bullet->set_is_move(true);
 		p_bullet->set_bullet_dir(p_bullet->DIR_LEFT);
-		p_bullet->setRect(x_pos_ + 20, y_pos_ + 10);
+		p_bullet->setRect(x_pos_ + 100, y_pos_ + 10);
 		p_bullet->set_x_val(15);
 		bullet_list_.push_back(p_bullet);
 
 	}
 	} 
+void ThreatsObject::checktoMap(Map& map_data)
+{
+	int x1 = 0;
+	int x2 = 0;
+	int y1 = 0;
+	int y2 = 0;
+
+	int height_min = height_frame_ < TILE_SIZE ? height_frame_ : TILE_SIZE;
+
+	x1 = (x_pos_ + x_val_) / TILE_SIZE;
+	x2 = (x_pos_ + x_val_ + width_frame_ - 1) / TILE_SIZE;
+
+	y1 = y_pos_ / TILE_SIZE;
+	y2 = (y_pos_ + height_min - 1) / TILE_SIZE;
+
+	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y)
+	{
+
+		if (x_val_ > 0) {
+			int val1 = map_data.tile[y1][x2];
+			int val2 = map_data.tile[y2][x2];
+
+			if ((val1 != 0 && val1 != STATE_MONNEY) || (val2 != 0 && val2 != STATE_MONNEY)) {
+
+				x_val_ = 0;
+				//input_type_.right = 0;
+				//input_type_.left = 1;
+				//LoadImg("img//threat_left.png", screen);
+				
+
+			}
+		}
+
+
+
+		else if (x_val_ < 0) {
+			int val1 = map_data.tile[y1][x1];
+			int val2 = map_data.tile[y2][x1];
+
+			if ((val1 != 0 && val1 != STATE_MONNEY) || (val2 != 0 && val2 != STATE_MONNEY)) {
+
+				x_val_ = 0;
+				//input_type_.left = 0;
+
+				//input_type_.right = 1;
+				//LoadImg("img//threat_right.png", screen);
+			}
+
+		}
+
+
+	}
+
+	int width_min = width_frame_ < TILE_SIZE ? width_frame_ : TILE_SIZE;
+	x1 = x_pos_ / TILE_SIZE;
+	x2 = (x_pos_ + width_min) / TILE_SIZE;
+
+	y1 = (y_pos_ + y_val_) / TILE_SIZE;
+	y2 = (y_pos_ + y_val_ + height_frame_ - 1) / TILE_SIZE;
+
+	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
+		if (y_val_ > 0) {
+			int val1 = map_data.tile[y2][x1];
+			int val2 = map_data.tile[y2][x2];
+
+			if ((val1 != 0 && val1 != STATE_MONNEY) || (val2 != 0 && val2 != STATE_MONNEY)) {
+
+				y_val_ = 0;
+				
+				on_ground_ = true;
+			}
+
+		}
+		else if (y_val_ < 0)
+		{
+			int val1 = map_data.tile[y1][x1];
+			int val2 = map_data.tile[y1][x2];
+
+
+
+			if ((val1 != 0 && val1 != STATE_MONNEY) || (val2 != 0 && val2 != STATE_MONNEY))
+
+			{
+				y_val_ = 0;
+		
+			}
+
+
+		}
+
+
+	}
+
+	x_pos_ += x_val_;
+	y_pos_ += y_val_;
+
+	if (x_pos_ < 0) { x_pos_ = 0; }
+	else if (x_pos_ + width_frame_ > map_data.max_x) {
+
+		x_pos_ = map_data.max_x - width_frame_ - 1;
+	}
+	if (y_pos_ > map_data.max_y) {
+		come_back_time_ = 60;
+	}
+
+
+}
 void ThreatsObject::MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit)
 {
 	for (int i = 0; i < bullet_list_.size(); i++)
@@ -279,7 +287,7 @@ void ThreatsObject::MakeBullet(SDL_Renderer* screen, const int& x_limit, const i
 			if (a->get_is_move())
 			{
 				int distan_bullet = rect.x+width_frame_ - a->getRect().x;
-				if (distan_bullet < 300&& distan_bullet>0)
+				if (distan_bullet < 500&& distan_bullet>0)
 				{
 					a->xuliMove(x_limit, y_limit);
 					a->Render(screen);

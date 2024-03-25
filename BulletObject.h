@@ -42,6 +42,7 @@ public:
 		return is_move;
 	}
 	void xuliMove(const int& x_border, const int& y_border);
+	void xuliMove2(const int& x_border, const int& y_border);
 	void set_bullet_dir(const unsigned int& bulletDir) {
 		bullet_dir = bulletDir;
 	}
@@ -49,7 +50,7 @@ public:
 		return bullet_dir;
 	}
 	void set_bullet_type(const unsigned int& bulletType) {
-		bullet_dir = bulletType;
+		bullet_type = bulletType;
 	}
 	unsigned int get_buller_type() {
 		return bullet_type;

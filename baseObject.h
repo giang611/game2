@@ -14,7 +14,7 @@ public:
 	virtual bool loadImg(std::string path, SDL_Renderer* screen);
 	void Render(SDL_Renderer* des, const SDL_Rect* clip = NULL);
 	void Free();
-protected:
+
 	SDL_Texture* object;
 	SDL_Rect rect;
 };

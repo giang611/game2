@@ -16,6 +16,47 @@ mainObject::mainObject() {
 	map_x = 0;
 	map_y = 0;
 }
+void mainObject::doPlayer(Map& map_data) {
+	if (come_back_time == 0) {
+		x_val = 0;
+		y_val += 0.8;
+		if (y_val >= 10) {
+			y_val = 10;
+		}
+		if (input_type.left == 1) {
+			x_val -= player_speed;
+		}
+		else if (input_type.right == 1) {
+			x_val += player_speed;
+		}
+		else if (input_type.jump == 1) {
+			if (on_ground == true) {
+				y_val = -23;
+				on_ground = false;
+			}
+			input_type.jump = 0;
+
+		}
+		checktoMap(map_data);
+		tinhMap(map_data);
+	}
+	if (come_back_time > 0) {
+		come_back_time--;
+		if (come_back_time == 0) {
+			if (x_pos > 256) {
+				x_pos -= 256;
+
+
+			}
+			else { x_pos = 0; }
+			y_pos = 0;
+			x_val = 0;
+			y_val = 0;
+
+
+		}
+	}
+}
 mainObject::~mainObject() {
 
 	}
@@ -116,7 +157,7 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 	 if (event.type == SDL_MOUSEBUTTONDOWN) {
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			BulletObject* a = new BulletObject();
-			a->set_bullet_type(a->LASER_BULLET);
+			a->set_bullet_type(a->SPHERE_BULLET);
 			a->LoadImgBullet(screen);
 			if (status == WALK_LEFT) 
 			{
@@ -162,47 +203,7 @@ void mainObject::tinhMap(Map& map_data) {
 	}
 }
 
-void mainObject::doPlayer(Map& map_data) {
-	if (come_back_time == 0) {
-		x_val = 0;
-		y_val += 0.8;
-		if (y_val >= 10) {
-			y_val = 10;
-		}
-		if (input_type.left == 1) {
-			x_val -= player_speed;
-		}
-		else if (input_type.right == 1) {
-			x_val += player_speed;
-		}
-		else if (input_type.jump == 1) {
-			if (on_ground == true) {
-				y_val = -23;
-				on_ground = false;
-			}
-			input_type.jump = 0;
 
-		}
-		checktoMap(map_data);
-		tinhMap(map_data);
-	}
-	if (come_back_time > 0) {
-		come_back_time--;
-		if (come_back_time == 0) {
-			if (x_pos > 256) {
-				x_pos -= 256;
-				
-			
-			}
-			else { x_pos = 0; }
-			y_pos = 0;
-			x_val = 0;
-			y_val = 0;
-
-			
-		}
-	}
-}
 void mainObject::checktoMap(Map& map_data) {
 	int x1 = 0;
 	int x2 = 0;

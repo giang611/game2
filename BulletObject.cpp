@@ -12,20 +12,8 @@ BulletObject::~BulletObject() {
 	
 
 }
-void BulletObject::LoadImgBullet(SDL_Renderer* des){
-	if (bullet_type == LASER_BULLET) 
-	{
-		loadImg("img//spherebullet.png", des);
-	}
-	else
-	{
-		loadImg("img//laserbullet.png", des);
-	}
-
-
-}
 void BulletObject::xuliMove(const int& x_border, const int& y_border) {
-	if (bullet_dir == DIR_RIGHT) 
+	if (bullet_dir == DIR_RIGHT)
 	{
 		rect.x += x_val_;
 		if (rect.x > x_border)
@@ -33,7 +21,7 @@ void BulletObject::xuliMove(const int& x_border, const int& y_border) {
 			is_move = false;
 		}
 	}
-	else if(bullet_dir==DIR_LEFT)
+	else if (bullet_dir == DIR_LEFT)
 	{
 		rect.x -= x_val_;
 		if (rect.x < 0)
@@ -42,7 +30,7 @@ void BulletObject::xuliMove(const int& x_border, const int& y_border) {
 		}
 
 	}
-	else if (bullet_dir == DIR_UP) 
+	else if (bullet_dir == DIR_UP)
 	{
 		rect.y -= y_val_;
 		if (rect.y < 0)
@@ -79,7 +67,7 @@ void BulletObject::xuliMove(const int& x_border, const int& y_border) {
 	else if (bullet_dir == DIR_DOWN_LEFT)
 	{
 		rect.x -= x_val_;
-		if (rect.x <0)
+		if (rect.x < 0)
 		{
 			is_move = false;
 		}
@@ -103,4 +91,28 @@ void BulletObject::xuliMove(const int& x_border, const int& y_border) {
 		}
 	}
 }
+void BulletObject::xuliMove2(const int& x_border, const int& y_border) {
+	 if (bullet_dir == DIR_LEFT)
+	{
+		rect.x -= x_val_;
+		if (rect.x < x_border)
+		{
+			is_move = false;
+		}
 
+	}
+	
+}
+
+void BulletObject::LoadImgBullet(SDL_Renderer* des){
+	if (bullet_type == SPHERE_BULLET) 
+	{
+		loadImg("img//spherebullet.png", des);
+	}
+	else
+	{
+		loadImg("img//laserbullet.png", des);
+	}
+
+
+}

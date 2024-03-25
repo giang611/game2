@@ -1,5 +1,10 @@
 #include"commonfunc.h"
-
+#include"baseObject.h"
+bool SDLCommonfunc::checkmouse(const int& x, const int& y, const SDL_Rect& rect)
+{
+    if (x >= rect.x && x <= rect.x + rect.w && y >= rect.y && y <= rect.y + rect.h) { return true; }
+    return false;
+}
 bool SDLCommonfunc::CheckCollision(const SDL_Rect object1, const SDL_Rect object2) 
 {
     int left_a = object1.x;
@@ -85,3 +90,5 @@ bool SDLCommonfunc::CheckCollision(const SDL_Rect object1, const SDL_Rect object
 
     return false;
 }
+
+

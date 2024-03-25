@@ -5,6 +5,7 @@ TextObject::TextObject()
 	text_color.r = 255;
 	text_color.g = 255;
 	text_color.b = 255;
+	
 	texture = NULL;
 }
 TextObject::~TextObject() {
@@ -75,4 +76,13 @@ bool TextObject::LoadFromRenderText(TTF_Font* font, SDL_Renderer* screen)
 			renderQuad.h = clip->h;
 		}
 		SDL_RenderCopyEx(screen, texture, clip, &renderQuad, angle, center, flip);
+	}
+	SDL_Rect TextObject::getRect()
+	{
+		SDL_Rect tmp;
+		tmp.x = xpos;
+		tmp.y = ypos;
+		tmp.w = width;
+		tmp.h = height;
+		return tmp;
 	}

@@ -1,9 +1,10 @@
 #pragma once
 #include"commonfunc.h"
-
+#include"baseObject.h"
 class TextObject
 {
 public: 
+    int xpos, ypos;
     TextObject();
     ~TextObject();
 
@@ -26,6 +27,10 @@ public:
         SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
     int GetWidth() const { return width; }
     int GetHeight() const { return height; }
+    SDL_Rect getRect();
+    
+    void setX(int xx) { xpos = xx; }
+    void setY(int yy) { ypos = yy; }
 
     void SetText(const string& text) {
         str_val = text;
@@ -37,6 +42,7 @@ private:
     SDL_Texture* texture;
     int width;
     int height;
+    SDL_Rect rect;
     
 
 

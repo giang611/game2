@@ -60,6 +60,12 @@ bool TextObject::LoadFromRenderText(TTF_Font* font, SDL_Renderer* screen)
 			SDL_Color color = { 0,0,0 };
 			text_color = color;
 		}
+		else if (type == MENU_TEXT)
+		{
+
+			SDL_Color color = { 19,173,7};
+			text_color = color;
+		}
 	}
 	void TextObject::RenderText(SDL_Renderer* screen, 
 		int xp, int yp, 

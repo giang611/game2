@@ -1,11 +1,21 @@
 #pragma once
 #include"commonfunc.h"
 #include"baseObject.h"
+
 class BulletObject : public baseObject {
 public: 
 	BulletObject();
 	~BulletObject();
+	bool vc;
+	int x_pos, y_pos;
+	int width_frame, height_frame;
+	int map_x, map_y;
+	void setMapXY(const int map_x_, const int map_y_) {
+		map_x = map_x_;
+		map_y = map_y_;
 
+
+	}
 	enum BulletDir {
 		DIR_RIGHT = 20,
 		DIR_LEFT = 21,
@@ -29,6 +39,12 @@ public:
 	void set_y_val(const int& yVal) {
 		y_val_ = yVal;
 	}
+	void set_x_pos(const int& xpos) {
+		x_pos = xpos;
+	}
+	void set_y_pos(const int& yVal) {
+		y_pos = yVal;
+	}
 	void set_is_move(const bool& isMove) {
 		is_move = isMove;
 	}
@@ -41,11 +57,12 @@ public:
 	bool get_is_move() {
 		return is_move;
 	}
-	void xuliMove(const int& x_border, const int& y_border);
+	void xuliMove(const int& x_border, const int& y_border, Map& mapp);
 	void xuliMove2(const int& x_border, const int& y_border);
 	void set_bullet_dir(const unsigned int& bulletDir) {
 		bullet_dir = bulletDir;
 	}
+	
 	unsigned int get_buller_dir() {
 		return bullet_dir;
 	}
@@ -56,6 +73,9 @@ public:
 		return bullet_type;
 	}
 	void LoadImgBullet(SDL_Renderer* screen);
+	bool CheckToMapX(Map map_data);
+	void tinhMap(Map& map_data);
+		
 private:
 	int x_val_;
 	int y_val_;

@@ -14,7 +14,7 @@ static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
 
 //Screen
-const int fps = 50;
+const int fps = 60;
 const int Screen_WIDTH = 1280;
 const int Screen_HEIGHT = 640;
 
@@ -23,7 +23,7 @@ const int COLOR_KEY_G = 175;
 const int COLOR_KEY_B = 180;
 
 #define TILE_SIZE 64
-#define MAX_MAP_X 400
+#define MAX_MAP_X 350
 #define MAX_MAP_Y 10
 #define STATE_MONNEY 4
 
@@ -50,7 +50,7 @@ typedef struct Map {
 
  };
 
-#define player_speed 8;
+
 namespace SDLCommonfunc
 {
 	bool CheckCollision(const SDL_Rect object1, const SDL_Rect object2);

@@ -65,24 +65,25 @@ bool showMenu()
     pos_arr[1].y = 500;
     TextObject text_menu[kitem];
     text_menu[0].SetText("Play Game");
-    text_menu[0].SetColor(TextObject::WHITE_TEXT);
+    text_menu[0].SetColor(TextObject::MENU_TEXT);
     text_menu[0].setX(pos_arr[0].x);
     text_menu[0].setY(pos_arr[0].y);
     text_menu[1].SetText("Exit");
-    text_menu[1].SetColor(TextObject::WHITE_TEXT);
+    text_menu[1].SetColor(TextObject::MENU_TEXT);
     text_menu[1].setX(pos_arr[1].x);
     text_menu[1].setY(pos_arr[1].y);
     bool selected[2] = { 0,0 };
     int xm = 0; int ym = 0;
     SDL_Event m_event;
+
+
+    text_menu[0].LoadFromRenderText(font_time, g_screen);
+    text_menu[0].RenderText(g_screen, pos_arr[0].x, pos_arr[0].y);
+    text_menu[1].LoadFromRenderText(font_time, g_screen);
+    text_menu[1].RenderText(g_screen, pos_arr[1].x, pos_arr[1].y);
     while (true)
     {
        
-        
-            text_menu[0].LoadFromRenderText(font_time, g_screen);
-           text_menu[0].RenderText(g_screen, pos_arr[0].x, pos_arr[0].y);
-           text_menu[1].LoadFromRenderText(font_time, g_screen);
-           text_menu[1].RenderText(g_screen, pos_arr[1].x, pos_arr[1].y);
 
            while (SDL_PollEvent(&m_event))
            {
@@ -98,17 +99,23 @@ bool showMenu()
                    {
                        if (SDLCommonfunc::checkmouse(xm, ym, text_menu[i].getRect()))
                        {
+                           
                            if (selected[i] == false)
                            {
                                selected[i] = 1;
                                text_menu[i].SetColor(TextObject::RED_TEXT);
+                               text_menu[i].LoadFromRenderText(font_time, g_screen);
+                               text_menu[i].RenderText(g_screen, pos_arr[i].x, pos_arr[i].y);
                            }
                        }
                        else {
                            if (selected[i] == true)
                            {
                                selected[i] = 0;
-                               text_menu[i].SetColor(TextObject::BLACK_TEXT);
+                               text_menu[i].SetColor(TextObject::MENU_TEXT);
+                               text_menu[i].LoadFromRenderText(font_time, g_screen);
+                               text_menu[i].RenderText(g_screen, pos_arr[i].x, pos_arr[i].y);
+                               
                            }
                        }
                    }
@@ -166,7 +173,7 @@ vector<ThreatsObject*> MakeThreatList()
 
 
     ThreatsObject* dynamic_threats = new ThreatsObject[20];
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < 10; i++)
     {
         ThreatsObject* p_threat = (dynamic_threats + i);
         if (p_threat != NULL)
@@ -186,7 +193,7 @@ vector<ThreatsObject*> MakeThreatList()
         }
     }
     ThreatsObject* threats_objs = new ThreatsObject[20];
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 15; i++)
     {
         ThreatsObject* p_threat = (threats_objs + i);
         if (p_threat != NULL)
@@ -217,7 +224,7 @@ int main(int argc, char* args[]) {
     if (rett == 1) is_quit = true;
 
     Gamemap game_map;
-    game_map.Loadmap("map/map01.dat");
+    game_map.Loadmap("map/map04.dat");
     game_map.LoadTile(g_screen);
 
     PlayerPower player_power;
@@ -238,7 +245,7 @@ int main(int argc, char* args[]) {
     bossObject.loadImg("img//boss_object.png", g_screen);
     bossObject.set_clips();
 
-    int xposboss = MAX_MAP_X * TILE_SIZE - 0.6 * Screen_WIDTH;
+    int xposboss = MAX_MAP_X * TILE_SIZE - Screen_WIDTH * 0.6;
     int yposboss = 10;
 
 
@@ -291,7 +298,7 @@ int main(int argc, char* args[]) {
         back_ground.Render(g_screen, NULL);
 
         Map map = game_map.gamemap;
-        player.handleBullet(g_screen);
+        player.handleBullet(g_screen,map);
         player.setMapXY(map.start_x, map.start_y);
 
         player.doPlayer(map);
@@ -320,7 +327,7 @@ int main(int argc, char* args[]) {
         int width_exp_frame = exp_main.get_frame_width();
         int height_exp_frame = exp_main.get_frame_height();
         if (val <= Screen_WIDTH)
-        {
+       {
 
 
             if (hpboss > 0)
@@ -329,7 +336,7 @@ int main(int argc, char* args[]) {
                 bossObject.set_ypos(yposboss);
                 bossObject.setMapXY(map.start_x, map.start_y);
                 bossObject.DoPlayer(map);
-                bossObject.MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT);
+                bossObject.MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT,map);
                 bossObject.Show(g_screen);
 
                 
@@ -435,7 +442,7 @@ int main(int argc, char* args[]) {
 
                 p_threat->impTypeMove(g_screen);
                 p_threat->doPlayer(map);
-                p_threat->MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT);
+                p_threat->MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT,map);
                 p_threat->show(g_screen);
                 SDL_Rect rect_player = player.getRectframe();
                 bool bcol1 = false;
@@ -550,7 +557,7 @@ int main(int argc, char* args[]) {
 
         string str_time = "Time: ";
         Uint32 time_val = SDL_GetTicks() / 1000;
-        Uint32 val_time = 150 - time_val;
+        Uint32 val_time = 200 - time_val;
         if (val_time <= 0)
         {
             if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK)

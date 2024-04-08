@@ -42,7 +42,7 @@ public:
 		bullet_list = an_list;
 	}
 	void InitBullet(SDL_Renderer* screen);
-	void MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit);
+	void MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit, Map& mapp);
 	void RemoveBullet(const int& idx);
 	int getHp() { return hp; }
 	SDL_Rect getRectframe();

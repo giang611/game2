@@ -8,15 +8,17 @@ mainObject::mainObject() {
 	y_pos = 0;
 	width_frame = 0;
 	height_frame = 0;
-	status = -1;
+	status = WALK_RIGHT;
 	input_type.left = 0;
 	input_type.right = 0;
 	input_type.down = 0;
 	input_type.up = 0;
 	map_x = 0;
 	map_y = 0;
+	player_speed = 8;
 }
 void mainObject::doPlayer(Map& map_data) {
+	
 	if (come_back_time == 0) {
 		x_val = 0;
 		y_val += 0.8;
@@ -29,7 +31,7 @@ void mainObject::doPlayer(Map& map_data) {
 		else if (input_type.right == 1) {
 			x_val += player_speed;
 		}
-		else if (input_type.jump == 1) {
+		 if (input_type.jump == 1) {
 			if (on_ground == true) {
 				y_val = -23;
 				on_ground = false;
@@ -56,6 +58,8 @@ void mainObject::doPlayer(Map& map_data) {
 
 		}
 	}
+	
+	
 }
 mainObject::~mainObject() {
 
@@ -158,19 +162,40 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			BulletObject* a = new BulletObject();
 			a->set_bullet_type(a->SPHERE_BULLET);
+			//a->setMapXY(map_x, map_y);
 			a->LoadImgBullet(screen);
-			if (status == WALK_LEFT) 
+			if (status == WALK_LEFT && input_type.left == 0&&input_type.right==0)
 			{
 				a->set_bullet_dir(a->DIR_LEFT);
-				a->setRect(this->rect.x , this->rect.y + 0.3 * height_frame);
+				a->setRect(x_pos-map_x , y_pos-map_y + 0.3 * height_frame);
+				a->set_x_val(-20);
+				a->set_x_pos(this->rect.x+map_x);
+				a->set_y_pos(this->rect.y + 0.3 * height_frame+map_y);
+			}
+			else if (input_type.left==1)
+			{
+				
+				a->set_bullet_dir(a->DIR_LEFT);
+				a->setRect(x_pos-map_x , y_pos-map_y + 0.3 * height_frame);
+				a->set_x_val(-20);
+				a->set_x_pos(this->rect.x+map_x);
+				a->set_y_pos(this->rect.y + 0.3 * height_frame+map_y);
+				//a->setMapXY(map_x, map_y);
+				
 			}
 			else 
 			{
+				
 				a->set_bullet_dir(a->DIR_RIGHT);
-				a->setRect(this->rect.x + width_frame - 20, this->rect.y + 0.3 * height_frame);
+				a->setRect(x_pos-map_x + width_frame - 20, y_pos-map_y + 0.3 * height_frame);
+				a->set_x_val(15);
+				a->set_x_pos(this->rect.x + width_frame - 20 + map_x);
+				a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+				//a->setMapXY(map_x, map_y);
+				
 			}
 			
-			a->set_x_val(20);
+		
 			a->set_is_move(true);
 			
 			bullet_list.push_back(a);
@@ -327,48 +352,61 @@ void mainObject::checktoMap(Map& map_data) {
 
 		x_pos = map_data.max_x- width_frame - 1;
 	}
-	if (y_pos > map_data.max_y) {
+	if (y_pos > map_data.max_y)
 		come_back_time = 60;
 	}
 
 
-}
+
 void mainObject::IncreaseMoney() {
 	money_count++;
 }
 void mainObject::UpdateImagePlayer(SDL_Renderer* des) {
 	if (on_ground == true) {
-		if (status == WALK_LEFT) {
+		if (input_type.left==1) {
 			LoadImg("img//player_left.png",des);
 		}
-		else {
+		else if(input_type.right==1) {
 			LoadImg("img//player_right.png",des);
 		}
-
+		else if(status==WALK_RIGHT) LoadImg("img//player_right.png", des);
+		else if (status == WALK_LEFT) LoadImg("img//player_left.png", des);
 	}
 	else {
-		if (status == WALK_LEFT) {
+		if (input_type.left==1) {
 			LoadImg("img//jum_left.png", des);
 
 		}
-		else {
+		else if(input_type.right==1){
 		LoadImg("img//jum_right.png", des);
 		}
+		else if(status==WALK_RIGHT) LoadImg("img//jum_right.png", des);
 
 	}
 
 
 }
 
-void mainObject::handleBullet(SDL_Renderer* des) {
+void mainObject::handleBullet(SDL_Renderer* des , Map& mapp) {
 	for (int i = 0; i < bullet_list.size(); i++) {
 		BulletObject* a = bullet_list.at(i);
+		
+		
 		if (a != NULL) 
 		{
+			a->setMapXY(map_x, map_y);
+			if (a->vc == true) { bullet_list.erase(bullet_list.begin() + i);
+			if (a != NULL)
+			{
+				delete a;
+				a = NULL;
+			}continue; }
+			
 			if (a->get_is_move()) 
 			{
-				a->xuliMove(Screen_WIDTH, Screen_HEIGHT);
+				a->xuliMove(Screen_WIDTH, Screen_HEIGHT, mapp);
 				a->Render(des);
+				
 			}
 			else
 			{
@@ -380,8 +418,9 @@ void mainObject::handleBullet(SDL_Renderer* des) {
 				}
 
 			}
-
+			
 		}
+		
 		
 
 	}

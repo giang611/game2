@@ -277,7 +277,7 @@ void ThreatsObject::checktoMap(Map& map_data)
 
 
 }
-void ThreatsObject::MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit)
+void ThreatsObject::MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit,Map& mapp)
 {
 	for (int i = 0; i < bullet_list_.size(); i++)
 	{
@@ -289,7 +289,7 @@ void ThreatsObject::MakeBullet(SDL_Renderer* screen, const int& x_limit, const i
 				int distan_bullet = rect.x+width_frame_ - a->getRect().x;
 				if (distan_bullet < 500&& distan_bullet>0)
 				{
-					a->xuliMove(x_limit, y_limit);
+					a->xuliMove(x_limit, y_limit,mapp);
 					a->Render(screen);
 				}
 				else a->set_is_move(false);

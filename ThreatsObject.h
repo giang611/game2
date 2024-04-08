@@ -77,7 +77,7 @@ public:
 
 	 }
 	 void InitBullet(BulletObject* bullet, SDL_Renderer* screen);
-	 void MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit);
+	 void MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit, Map& mapp);
 	 void RemoveBullet(const int& idx);
 	 SDL_Rect getRectframe();
 	 

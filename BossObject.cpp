@@ -1,4 +1,5 @@
 #include"BossObject.h"
+
 BossObject::BossObject() {
 	frame = 0;
 	x_val = 0;
@@ -193,7 +194,7 @@ void BossObject::InitBullet(SDL_Renderer* screen)
 
 }
 
-void BossObject::MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit) {
+void BossObject::MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit,  Map& mapp) {
 	if (frame == 18)
 	{
 		InitBullet(des);
@@ -205,7 +206,7 @@ void BossObject::MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_
 		{
 			if (p_bullet->get_is_move())
 			{
-				p_bullet->xuliMove(x_limit, y_limit);
+				p_bullet->xuliMove(x_limit, y_limit,mapp);
 				p_bullet->Render(des);
 			}
 			else 

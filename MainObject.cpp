@@ -5,9 +5,9 @@ mainObject::mainObject(SDL_Renderer* des) {
 	frame = 0;
 	x_val = 0;
 	y_val = 0;
-	x_pos =20100;
+	x_pos =0;
 	y_pos = 0;
-	width_frame = 0;
+	width_frame =0;
 	height_frame = 0;
 	status = WALK_RIGHT;
 	input_type.left = 0;
@@ -19,11 +19,11 @@ mainObject::mainObject(SDL_Renderer* des) {
 	player_speed = 8;
 	tt = 1;
 	hp=3;
-	
+	tia3 = false;
 	
 }
 
-void mainObject::doPlayer(Map& map_data) {
+void mainObject::doPlayer(Map& map_data,Mix_Chunk* a[5]) {
 	
 	if (come_back_time == 0) {
 		x_val = 0;
@@ -45,7 +45,7 @@ void mainObject::doPlayer(Map& map_data) {
 			input_type.jump = 0;
 
 		}
-		checktoMap(map_data);
+		checktoMap(map_data,a);
 		tinhMap(map_data);
 	}
 	if (come_back_time > 0) {
@@ -123,7 +123,7 @@ void mainObject::show(SDL_Renderer* des) {
 	SDL_Rect renderQuad= { rect.x,rect.y,width_frame,height_frame };
 	SDL_RenderCopy(des, object, current_clip, &renderQuad);
 }
-void mainObject::xulihd(SDL_Event event, SDL_Renderer* des) {
+void mainObject::xulihd(SDL_Event event, SDL_Renderer* des,Mix_Chunk* bullet_sound[2]) {
 
 	if (event.type == SDL_KEYDOWN) {
 		switch (event.key.keysym.sym) {
@@ -173,46 +173,176 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* des) {
 
 	 if (event.type == SDL_MOUSEBUTTONDOWN) {
 		if (event.button.button == SDL_BUTTON_RIGHT) {
+			
+			Mix_PlayChannel(-1, bullet_sound[0], 0);
 			BulletObject* a = new BulletObject();
 			a->set_bullet_type(a->SPHERE_BULLET);
-			//a->setMapXY(map_x, map_y);
+			
 			a->LoadImgBullet(des,tt);
-			if (status == WALK_LEFT && input_type.left == 0&&input_type.right==0)
-			{
-				a->set_bullet_dir(a->DIR_LEFT);
-				a->setRect(x_pos-map_x , y_pos-map_y + 0.3 * height_frame);
-				a->set_x_val(-30);
-				a->set_x_pos(this->rect.x+map_x);
-				a->set_y_pos(this->rect.y + 0.3 * height_frame+map_y);
+			BulletObject* b = new BulletObject();
+			b->set_bullet_type(a->SPHERE_BULLET);
+
+			b->LoadImgBullet(des, tt);
+			BulletObject* c = new BulletObject();
+			c->set_bullet_type(a->SPHERE_BULLET);
+
+			c->LoadImgBullet(des, tt);
+			BulletObject* d = new BulletObject();
+			d->set_bullet_type(a->SPHERE_BULLET);
+
+			d->LoadImgBullet(des, tt);
+			BulletObject* e = new BulletObject();
+			e->set_bullet_type(a->SPHERE_BULLET);
+
+			e->LoadImgBullet(des, tt);
+			BulletObject* f = new BulletObject();
+			f->set_bullet_type(a->SPHERE_BULLET);
+
+			f->LoadImgBullet(des, tt);
+			if (tia3 == false) {
+				if (status == WALK_LEFT && input_type.left == 0 && input_type.right == 0)
+				{
+					a->set_bullet_dir(a->DIR_LEFT);
+					a->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					a->set_x_val(-30);
+					a->set_x_pos(this->rect.x + map_x);
+					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+				}
+				else if (input_type.left == 1)
+				{
+
+					a->set_bullet_dir(a->DIR_LEFT);
+					a->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					a->set_x_val(-30);
+					a->set_x_pos(this->rect.x + map_x);
+					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					//a->setMapXY(map_x, map_y);
+
+				}
+				else
+				{
+
+					a->set_bullet_dir(a->DIR_RIGHT);
+					a->setRect(x_pos - map_x + width_frame - 20, y_pos - map_y + 0.3 * height_frame);
+					a->set_x_val(30);
+					
+					a->set_x_pos(this->rect.x + width_frame - 20 + map_x);
+					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					//a->setMapXY(map_x, map_y);
+
+				}
+
+
+				a->set_is_move(true);
+
+				bullet_list.push_back(a);
 			}
-			else if (input_type.left==1)
+			else
 			{
+				if (status == WALK_LEFT && input_type.left == 0 && input_type.right == 0)
+				{
+					a->set_bullet_dir(a->DIR_UP_LEFT);
+					a->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					a->set_x_val(-30);
+					
+					a->set_x_pos(this->rect.x + map_x);
+					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					a->set_is_move(true);
+
+					bullet_list.push_back(a);
+					b->set_bullet_dir(b->DIR_UP);
+					b->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
 				
-				a->set_bullet_dir(a->DIR_LEFT);
-				a->setRect(x_pos-map_x , y_pos-map_y + 0.3 * height_frame);
-				a->set_x_val(-30);
-				a->set_x_pos(this->rect.x+map_x);
-				a->set_y_pos(this->rect.y + 0.3 * height_frame+map_y);
-				//a->setMapXY(map_x, map_y);
+					b->set_y_val(-30);
+					b->set_x_val(-8);
+					b->set_x_pos(this->rect.x + map_x);
+					b->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					b->set_is_move(true);
+
+					bullet_list.push_back(b);
+					c->set_bullet_dir(c->DIR_UP_LEFT);
+					c->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					c->set_x_val(-45);
+					c->set_y_val(-30);
+					c->set_x_pos(this->rect.x + map_x);
+					c->set_y_pos(this->rect.y + 0.3 * height_frame + map_y-30);
+					c->set_is_move(true);
+
+					bullet_list.push_back(c);
+					
+					
+					
+				}
+				else if (input_type.left == 1)
+				{
+
+					a->set_bullet_dir(a->DIR_UP_LEFT);
+					a->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					a->set_x_val(-30);
+					a->set_y_val(-30);
+					a->set_x_pos(this->rect.x + map_x);
+					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					a->set_is_move(true);
+
+					bullet_list.push_back(a);
+					b->set_bullet_dir(b->DIR_UP);
+					b->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+
+					b->set_y_val(-30);
+					b->set_x_val(-8);
+					b->set_x_pos(this->rect.x + map_x);
+					b->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					b->set_is_move(true);
+
+					bullet_list.push_back(b);
+					c->set_bullet_dir(c->DIR_UP_LEFT);
+					c->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					c->set_x_val(-45);
+					c->set_y_val(-30);
+					c->set_x_pos(this->rect.x + map_x);
+					c->set_y_pos(this->rect.y + 0.3 * height_frame + map_y - 30);
+					c->set_is_move(true);
+
+					bullet_list.push_back(c);
+
+				}
+				else
+				{
+
+					a->set_bullet_dir(a->DIR_UP_LEFT);
+					a->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					a->set_x_val(30);
+					a->set_y_val(5);
+					a->set_x_pos(this->rect.x + map_x);
+					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					a->set_is_move(true);
+
+					bullet_list.push_back(a);
+					b->set_bullet_dir(b->DIR_UP);
+					b->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+
+					b->set_y_val(-30);
+					b->set_x_val(15);
+					b->set_x_pos(this->rect.x + map_x+30);
+					b->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					b->set_is_move(true);
+
+					bullet_list.push_back(b);
+					c->set_bullet_dir(c->DIR_UP_LEFT);
+					c->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					c->set_x_val(45);
+					c->set_y_val(-20);
+					c->set_x_pos(this->rect.x + map_x);
+					c->set_y_pos(this->rect.y + 0.3 * height_frame + map_y );
+					c->set_is_move(true);
+
+					bullet_list.push_back(c);
+
+				}
+
+
 				
 			}
-			else 
-			{
-				
-				a->set_bullet_dir(a->DIR_RIGHT);
-				a->setRect(x_pos-map_x + width_frame - 20, y_pos-map_y + 0.3 * height_frame);
-				a->set_x_val(30);
-				a->set_x_pos(this->rect.x + width_frame - 20 + map_x);
-				a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
-				//a->setMapXY(map_x, map_y);
-				
-			}
-			
-		
-			a->set_is_move(true);
-			
-			bullet_list.push_back(a);
-			
 		}
 		else if (event.button.button == SDL_BUTTON_LEFT) {
 			input_type.jump = 1;
@@ -242,32 +372,33 @@ void mainObject::tinhMap(Map& map_data) {
 }
 
 
-void mainObject::checktoMap(Map& map_data) {
+void mainObject::checktoMap(Map& map_data,Mix_Chunk* a[5]) {
 	int x1 = 0;
 	int x2 = 0;
 	int y1 = 0;
 	int y2 = 0;
-	
+
 	int height_min = height_frame < TILE_SIZE ? height_frame : TILE_SIZE;
 
-	x1 = (x_pos + x_val) / TILE_SIZE; 
-	x2 = (x_pos + x_val + width_frame -1  ) / TILE_SIZE;
+	x1 = (x_pos + x_val) / TILE_SIZE;
+	x2 = (x_pos + x_val + width_frame - 1) / TILE_SIZE;
 
 	y1 = y_pos / TILE_SIZE;
-	y2 = (y_pos + height_min -1) / TILE_SIZE;
-	
-	if (x1 >= 0 && x2 < MAX_MAP_X && y1>=0 && y2<MAX_MAP_Y) {
+	y2 = (y_pos + height_min - 1) / TILE_SIZE;
+
+	if (x1 >= 0 && x2 < MAX_MAP_X && y1 >= 0 && y2 < MAX_MAP_Y) {
 
 		if (x_val > 0) {
 			int val1 = map_data.tile[y1][x2];
 			int val2 = map_data.tile[y2][x2];
 			if (val1 == STATE_MONNEY || val2 == STATE_MONNEY)
 			{
+				Mix_PlayChannel(-1, a[0], 0);
 				map_data.tile[y1][x2] = 0;
 				map_data.tile[y2][x2] = 0;
 				IncreaseMoney();
 			}
-			else 
+			else
 			{
 				if (val1 != 0 || val2 != 0) {
 
@@ -287,11 +418,12 @@ void mainObject::checktoMap(Map& map_data) {
 			int val2 = map_data.tile[y2][x1];
 			if (val1 == STATE_MONNEY || val2 == STATE_MONNEY)
 			{
+				Mix_PlayChannel(-1, a[0], 0);
 				map_data.tile[y1][x1] = 0;
 				map_data.tile[y1][x2] = 0;
 				IncreaseMoney();
 			}
-			else 
+			else
 			{
 				if (val1 != 0 || val2 != 0) {
 					x_pos = (x1 + 1) * TILE_SIZE;
@@ -302,8 +434,8 @@ void mainObject::checktoMap(Map& map_data) {
 		}
 
 	}
-	
-	
+
+
 	int width_min = width_frame < TILE_SIZE ? width_frame : TILE_SIZE;
 	x1 = x_pos / TILE_SIZE;
 	x2 = (x_pos + width_min) / TILE_SIZE;
@@ -317,11 +449,12 @@ void mainObject::checktoMap(Map& map_data) {
 			int val2 = map_data.tile[y2][x2];
 			if (val1 == STATE_MONNEY || val2 == STATE_MONNEY)
 			{
+				Mix_PlayChannel(-1, a[0], 0);
 				map_data.tile[y2][x1] = 0;
 				map_data.tile[y2][x2] = 0;
 				IncreaseMoney();
 			}
-			else 
+			else
 			{
 				if (val1 != 0 || val2 != 0) {
 					y_pos = y2 * TILE_SIZE;
@@ -331,12 +464,13 @@ void mainObject::checktoMap(Map& map_data) {
 				}
 			}
 		}
-			else if (y_val < 0) 
+		else if (y_val < 0)
 		{
 			int val1 = map_data.tile[y1][x1];
 			int val2 = map_data.tile[y1][x2];
-			if (val1 == STATE_MONNEY || val2 == STATE_MONNEY) 
+			if (val1 == STATE_MONNEY || val2 == STATE_MONNEY)
 			{
+				Mix_PlayChannel(-1, a[0], 0);
 				map_data.tile[y1][x1] = 0;
 				map_data.tile[y1][x2] = 0;
 				IncreaseMoney();
@@ -345,28 +479,31 @@ void mainObject::checktoMap(Map& map_data) {
 			{
 
 
-				if (val1 != 0 && val2 != 0) 
-				
+				if (val1 != 0 && val2 != 0)
+
 				{
 					y_pos = (y1 + 1) * TILE_SIZE;
 					y_val = 0;
 				}
 			}
 
-			}
-					
 		}
+
+	}
 
 	x_pos += x_val;
 	y_pos += y_val;
-	
-	if (x_pos < 0) { x_pos = 0; }
-	 else if (x_pos + width_frame >map_data.max_x) {
 
-		x_pos = map_data.max_x- width_frame - 1;
+	if (x_pos < 0) { x_pos = 0; }
+	else if (x_pos + width_frame > map_data.max_x) {
+
+		x_pos = map_data.max_x - width_frame - 1;
 	}
-	if (y_pos > map_data.max_y)
+	if (y_pos > map_data.max_y) {
 		come_back_time = 60;
+		
+	}
+
 	}
 
 

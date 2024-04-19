@@ -249,7 +249,7 @@ void BossObject::InitBullet2(SDL_Renderer* screen)
 }
 
 
-void BossObject::MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit,  Map& mapp) {
+void BossObject::MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit,  Map& mapp,Mix_Chunk* c[2]) {
 	if (frame == 18)
 	{
 		InitBullet(des);
@@ -266,6 +266,7 @@ void BossObject::MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_
 		{
 			if (p_bullet->get_is_move()&&p_bullet->vc==false)
 			{
+				Mix_PlayChannel(-1, c[1], 0);
 				p_bullet->setMapXY(map_x, map_y);
 				p_bullet->xuliMove2(x_limit, y_limit,mapp);
 				p_bullet->Render2(des);

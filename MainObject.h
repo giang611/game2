@@ -7,6 +7,7 @@
 class mainObject :public baseObject {
 public:
 	mainObject(SDL_Renderer* des);
+	void doPlayer(Map& map_data, Mix_Chunk* a[5]);
 	~mainObject();
 	int width_frame;
 	int height_frame;
@@ -16,6 +17,7 @@ public:
 	};
 	bool LoadImg(string path, SDL_Renderer* screen,int status);
 	void show(SDL_Renderer* des);
+	void xulihd(SDL_Event event, SDL_Renderer* des, Mix_Chunk* bullet_sound[2]);
 	void xulihd(SDL_Event event, SDL_Renderer* screen);
 	void set_clip();
     void doPlayer(Map& map_data);
@@ -28,6 +30,7 @@ public:
 
 	}
 	void tinhMap(Map& map_data);
+	void checktoMap(Map& map_data, Mix_Chunk* a[2]);
 	void set_bullet_list(vector <BulletObject*> list) {
 		bullet_list = list;
 	}
@@ -45,13 +48,17 @@ public:
 	double player_speed;
 	bool on_ground = false;
 	int getMoneyCount() const { return money_count; }
+	int status;
+	int come_back_time;
+	bool tia3;
+	
 private: 
 	int money_count = 0;
 	double x_val;
 	double y_val;
 	vector<BulletObject*> bullet_list;
 	
-	int status;
+	
 	
 	
 
@@ -62,7 +69,7 @@ private:
 	
 	int map_x;
 	int map_y;
-	int come_back_time;
+	
 		
 
 };

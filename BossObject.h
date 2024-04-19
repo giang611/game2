@@ -44,7 +44,7 @@ public:
 	void InitBullet(SDL_Renderer* screen);
 	void InitBullet1(SDL_Renderer* screen);
 	void InitBullet2(SDL_Renderer* screen);
-	void MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit, Map& mapp);
+	void MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit, Map& mapp,Mix_Chunk* a[2]);
 	void RemoveBullet(const int& idx);
 	int getHp() { return hp; }
 	SDL_Rect getRectframe();

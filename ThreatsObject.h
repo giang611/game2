@@ -74,6 +74,7 @@ public:
 	 void doPlayer(Map& gMap);
 	 void doPlayer2(Map& gmap);
 	 void checktoMap(Map& gMap);
+	 
 	 void set_bullet_list(vector<BulletObject*>& bl_list)
 	 {
 		 bullet_list_ = bl_list;
@@ -93,7 +94,7 @@ public:
 	 void InitBullet7(BulletObject* p_bullet, SDL_Renderer* screen);
 	 void InitBullet8(BulletObject* p_bullet, SDL_Renderer* screen);
 	 void MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit, Map& mapp);
-	 void MakeBullet2(SDL_Renderer* screen, const int& x_limit, const int& y_limit, Map& mapp);
+	 void MakeBullet2(SDL_Renderer* screen, const int& x_limit, const int& y_limit, Map& mapp,Mix_Chunk* a[2]);
 	 void RemoveBullet(const int& idx);
 	 SDL_Rect getRectframe();
 	 int type_move_;

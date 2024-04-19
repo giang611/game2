@@ -13,13 +13,19 @@
 baseObject back_ground;
 baseObject back_ground2;
 baseObject back_ground3;
+baseObject back_ground4;
 baseObject menu;
 vector<int> pos_listt;
-
+int dem = 0;
+bool win = false,lose=false;
+bool dan33 = false;
+int dem1[10] = { 0 };
+int dem2[10] = { 0 };
 TTF_Font* font_time = NULL;
 int i = 0;
 int j = 1;
 double time_khienn;
+double time_dann;
 bool fire1 = false, fire2 = false, fire11 = false, fire22 = false;
 bool fire_tt=false;
 bool fire_tt2 = false;
@@ -34,6 +40,18 @@ bool Initdata() {
         return false;
 
     }
+    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096 == -1))
+    
+        return false;
+        g_sound_bullet[0]=Mix_LoadWAV("bulletat1.wav");
+        g_sound_bullet[1]= Mix_LoadWAV("bulletat2.wav");
+        g_sound_exp[0] = Mix_LoadWAV("exp1at.wav");
+        g_sound_exp[1] = Mix_LoadWAV("exp2at.wav");
+        g_sound_exp[2] = Mix_LoadWAV("at2.wav");
+        g_sound_exp[3] = Mix_LoadWAV("at3.wav");
+        g_sound_exp[4] = Mix_LoadWAV("expth.wav");
+        item[0] = Mix_LoadWAV("coin.wav");
+        item[1] = Mix_LoadWAV("coin2.wav");
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     g_window = SDL_CreateWindow("game cua toi",
@@ -166,8 +184,9 @@ bool showMenu()
 
 bool Loadanh() {
 
-    bool ret = back_ground.loadImg("img//bg2.png", g_screen,1);
-    back_ground3.loadImg("img//bg2.png", g_screen, 1);
+    bool ret = back_ground.loadImg("img//2.png", g_screen,1);
+    back_ground3.loadImg("img//brg2.jpg", g_screen, 1);
+    back_ground4.loadImg("img//gameover.jpg", g_screen, 1);
     back_ground2.loadImg("img//bg3.png", g_screen, 1);
     if (ret == false) return false;
     return true;
@@ -523,6 +542,7 @@ vector<ThreatsObject*> MakeThreatList()
     vector< khien*> khien_item;
 
      baseObject khien_item2;
+     baseObject dan4;
      baseObject hp_item;
      baseObject hp;
      vector<baseObject*> hp1;
@@ -532,6 +552,8 @@ vector<ThreatsObject*> MakeThreatList()
 
      hp_item.loadImg2("img//hp1.png", g_screen);
      khien_item2.loadImg("img//khien3.png", g_screen, 1);
+     
+     dan4.loadImg("img//bullet.png", g_screen, 1);
      hp.loadImg2("img//hp.png", g_screen);
     
      khien* khien_tmp = new khien[20];
@@ -550,7 +572,7 @@ vector<ThreatsObject*> MakeThreatList()
          {
              ktmp->LoadImg("img//khien2.png", g_screen, 1);
              ktmp->set_clip2();
-             ktmp->x_pos = 7500;
+             ktmp->x_pos = 6600;
              ktmp->y_pos = 383.8;
          }
          else if (i == 2)
@@ -575,11 +597,15 @@ vector<ThreatsObject*> MakeThreatList()
      fire4.set_clip();
      //khien_item2.set_clip2();
      vector<khien*> heart;
+     khien dan3;
+     dan3.LoadImg3("img//box.png", g_screen, 1);
+     dan3.set_clip3();
+
      {     khien* heart1 = new khien[10];
      for (int i = 0; i < 3; i++)
      {
          khien* heart3 = heart1 + i;
-         heart3->LoadImg3("img/heart.png", g_screen, 1);
+         heart3->LoadImg3("img//heart.png", g_screen, 1);
          heart3->set_clip3();
          heart.push_back(heart3);
      }
@@ -638,6 +664,7 @@ vector<ThreatsObject*> MakeThreatList()
      TextObject time_game;
      time_game.SetColor(TextObject::WHITE_TEXT);
      TextObject time_khien;
+     TextObject time_dan;
      time_khien.SetColor(TextObject::RED_TEXT);
      time_game.SetColor(TextObject::WHITE_TEXT);
      TextObject mark_game;
@@ -658,50 +685,78 @@ vector<ThreatsObject*> MakeThreatList()
 
                  is_quit = true;
              }
-
-             player.xulihd(g_event, g_screen);
+             if(lose==false)
+             player.xulihd(g_event, g_screen, g_sound_bullet);
 
          }
-         cout << player.x_pos <<"    "<<player.y_pos << endl;
-         SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
-         SDL_RenderClear(g_screen);
-
-         back_ground.Render(g_screen, NULL);
-
-
-         player.handleBullet(g_screen, map);
-         player.setMapXY(map.start_x, map.start_y);
-
-         player.doPlayer(map);
-         player.show(g_screen);
-         for (int i = 0; i < khien_item.size(); i++)
+         if (lose == true)
          {
-             khien* tmp = khien_item.at(i);
-             tmp->setmapXY(map.start_x, map.start_y);
-             tmp->show2(g_screen, map);
 
-             bool bcolkhien = SDLCommonfunc::CheckCollision(player.getRectframe(), tmp->getRectframe());
+             SDL_RenderClear(g_screen);
+             back_ground4.Render(g_screen, NULL);
 
-             if (bcolkhien)
-                 tmp->Free();
-             if (bcolkhien == true) {
-                 khienn.status = 1;
+             SDL_RenderPresent(g_screen);
+         }
+         else
+         {
+             if (player.y_pos < MAX_MAP_Y * TILE_SIZE) dem = 0;
+             if (player.y_pos >= MAX_MAP_Y * TILE_SIZE && dem == 0)
+             {
+                 player.hp--;
+                 dem++;
+                 player_power.Decrease();
+                 if (player.hp <= 0)
+                 {
+                     lose = true;
+                     SDL_RenderClear(g_screen);
+                     back_ground4.Render(g_screen, NULL);
+
+                     SDL_RenderPresent(g_screen);
+                 }
              }
+             SDL_SetRenderDrawColor(g_screen, 255, 255, 255, 255);
+             SDL_RenderClear(g_screen);
+
+             back_ground.Render(g_screen, NULL);
+
+
+             player.handleBullet(g_screen, map);
+             player.setMapXY(map.start_x, map.start_y);
+
+             player.doPlayer(map, item);
+             player.show(g_screen);
+             for (int i = 0; i < khien_item.size(); i++)
+             {
+                 khien* tmp = khien_item.at(i);
+                 tmp->setmapXY(map.start_x, map.start_y);
+                 tmp->show2(g_screen, map);
+
+                 bool bcolkhien = SDLCommonfunc::CheckCollision(player.getRectframe(), tmp->getRectframe());
+
+                 if (bcolkhien && dem1[i] == 0)
+                 {
+                     Mix_PlayChannel(-1, item[1], 0);
+                     dem1[i] = 1;
+                     tmp->Free();
+                 }
+                 if (bcolkhien == true) {
+                     khienn.status = 1;
+                 }
+                 if (khienn.status == 1) {
+                     khien_item2.setRect(0, 40);
+                     khien_item2.Render(g_screen, NULL);
+                     khienn.setRect(player.getRect().x - 14, player.getRect().y - 11);
+                     khienn.show(g_screen, map);
+                 }
+             }
+             //cout << player.x_pos <<"     "<< player.y_pos << endl;
              if (khienn.status == 1) {
                  khien_item2.setRect(0, 40);
                  khien_item2.Render(g_screen, NULL);
                  khienn.setRect(player.getRect().x - 14, player.getRect().y - 11);
                  khienn.show(g_screen, map);
              }
-         }
-         //cout << player.x_pos <<"     "<< player.y_pos << endl;
-         if (khienn.status == 1) {
-             khien_item2.setRect(0, 40);
-             khien_item2.Render(g_screen, NULL);
-             khienn.setRect(player.getRect().x - 14, player.getRect().y - 11);
-             khienn.show(g_screen, map);
-         }
-             for (int i = 0; i <2; i++)
+             for (int i = 0; i < 2; i++)
              {
                  khien* tmp = heart.at(i);
                  if (i == 0)
@@ -725,291 +780,315 @@ vector<ThreatsObject*> MakeThreatList()
                      }
                  }
              }
-         
-         if (fire_tt == false) {
-             fire_item.setmapXY(map.start_x, map.start_y);
-             fire_item.setRect(13464 - fire_item.map_x_, 383 - fire_item.map_y_);
-             fire_item.show(g_screen, map);
 
-         }
-         if (fire_tt2 == false) {
-             fire_item2.setmapXY(map.start_x, map.start_y);
-             fire_item2.setRect(15096- fire_item2.map_x_, 383 - fire_item2.map_y_);
-             fire_item2.show(g_screen, map);
+             if (fire_tt == false) {
+                 fire_item.setmapXY(map.start_x, map.start_y);
+                 fire_item.setRect(13464 - fire_item.map_x_, 383 - fire_item.map_y_);
+                 fire_item.show(g_screen, map);
 
-         }
-         bool bcolfire = false; bool bcolfire1 = false;
-         bcolfire = SDLCommonfunc::CheckCollision(player.getRectframe(), fire_item.getRectframe());
-         bcolfire1 = SDLCommonfunc::CheckCollision(player.getRectframe(), fire_item2.getRectframe());
-         if (bcolfire)
-         {
+             }
+             if (fire_tt2 == false) {
+                 fire_item2.setmapXY(map.start_x, map.start_y);
+                 fire_item2.setRect(15096 - fire_item2.map_x_, 383 - fire_item2.map_y_);
+                 fire_item2.show(g_screen, map);
 
-             if (fire_tt == false) { thu = 1; }
-
-             fire_tt = true;
-         }
-         if (bcolfire1)
-         {
-
-             if (fire_tt2 == false) { thu = 1; }
-
-             fire_tt2 = true;
-         }
-         for (int i = 0; i < 2; i++)
-         {
-             khien* heartt = heart.at(i);
-             bool bcolheart = SDLCommonfunc::CheckCollision(player.getRectframe(), heartt->getRectframe());
-             if (bcolheart)
+             }
+             bool bcolfire = false; bool bcolfire1 = false;
+             bcolfire = SDLCommonfunc::CheckCollision(player.getRectframe(), fire_item.getRectframe());
+             bcolfire1 = SDLCommonfunc::CheckCollision(player.getRectframe(), fire_item2.getRectframe());
+             if (bcolfire)
              {
 
-                 if (heartt->heart_tt == 0)
+                 if (fire_tt == false) { thu = 1; }
+
+                 fire_tt = true;
+             }
+             if (bcolfire1)
+             {
+
+                 if (fire_tt2 == false) { thu = 1; }
+
+                 fire_tt2 = true;
+             }
+             for (int i = 0; i < 2; i++)
+             {
+                 khien* heartt = heart.at(i);
+                 bool bcolheart = SDLCommonfunc::CheckCollision(player.getRectframe(), heartt->getRectframe());
+                 if (bcolheart && dem2[i] == 0)
                  {
-                     player_power.InitCrease();
-                     player.hp++;
-                     heartt->heart_tt = 1;
+
+                     if (heartt->heart_tt == 0)
+                     {
+                         dem2[i] = 1;
+                         Mix_PlayChannel(-1, item[1], 0);
+                         player_power.InitCrease();
+                         player.hp++;
+                         heartt->heart_tt = 1;
+
+                     }
 
                  }
-                
              }
-         }
-         game_map.setMap(map);
-         game_map.DrawMap(g_screen);
-
-         GeometricFormat rectangle_size{ 0,0,Screen_WIDTH,40 };
-         ColorData color_data(0, 80, 150);
-         Geometric::RenderRectangle(rectangle_size, color_data, g_screen);
-
-         GeometricFormat outlineSize(1, 1, Screen_WIDTH - 1, 38);
-         ColorData color_data2(255, 0, 0);
-
-         Geometric::RenderOutline(outlineSize, color_data2, g_screen);
-
-         player_power.Show(g_screen);
-
-         player_money.SetPos(Screen_WIDTH * 0.5 - 300, 8);
-         player_money.Show(g_screen);
-         int val = MAX_MAP_X * TILE_SIZE - (map.start_x + player.getRect().x);
-         bool bcol3 = false;
-         bool bcol4 = false;
-         bool bcol5 = false;
-
-
-         int width_exp_frame = exp_main.get_frame_width();
-         int height_exp_frame = exp_main.get_frame_height();
-         if (val <= Screen_WIDTH&&tt_boss==0)
-         {
-             tt_boss = 1;
-             stt_boss = true;
-            
-         }
-         if(stt_boss==true)
-         {
-             if (hpboss > 0)
-             {
-                      
-                     
+             if (dan33 == false) {
+                 dan3.setmapXY(map.start_x, map.start_y);
+                 dan3.setRect(1000 - dan3.map_x_, 200 - dan3.map_y_);
+                 dan3.show(g_screen, map);
                  
-                 bossObject.set_xpos(xposboss);
-                 bossObject.set_ypos(yposboss);
-                 bossObject.setMapXY(map.start_x, map.start_y);
-                 bossObject.DoPlayer(map);
-                 bossObject.Show(g_screen);
-                 bossObject.MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT, map);
-
-               
-               
-                
-
-                 bcol3 = SDLCommonfunc::CheckCollision(player.getRectframe(), bossObject.getRectframe());
-                 for (int i = 0; i < player.get_bullet_list().size(); i++)
+             }
+             if (player.tia3 == true)
+             {
+                 dan3.Free();
+                 dan4.setRect(0, 90);
+                 dan4.Render(g_screen);
+             }
+             if (dan33 == false) {
+                 bool bcolit = SDLCommonfunc::CheckCollision(player.getRectframe(), dan3.getRectframe());
+                 if (bcolit == true)
                  {
-                     if (hpboss <= 0) break;
-                     BulletObject* bulletp = player.get_bullet_list().at(i);
-                     bcol5 = SDLCommonfunc::CheckCollision(bulletp->getRect(), bossObject.getRectframe());
-                     if (bcol5)
+                     cout << "1" << endl;
+                     dan33 = true; player.tia3 = true;
+                 }
+             }
+             game_map.setMap(map);
+             game_map.DrawMap(g_screen);
+
+             GeometricFormat rectangle_size{ 0,0,Screen_WIDTH,40 };
+             ColorData color_data(0, 80, 150);
+             Geometric::RenderRectangle(rectangle_size, color_data, g_screen);
+
+             GeometricFormat outlineSize(1, 1, Screen_WIDTH - 1, 38);
+             ColorData color_data2(255, 0, 0);
+
+             Geometric::RenderOutline(outlineSize, color_data2, g_screen);
+
+             player_power.Show(g_screen);
+
+             player_money.SetPos(Screen_WIDTH * 0.5 - 300, 8);
+             player_money.Show(g_screen);
+             int val = MAX_MAP_X * TILE_SIZE - (map.start_x + player.getRect().x);
+             bool bcol3 = false;
+             bool bcol4 = false;
+             bool bcol5 = false;
+
+
+             int width_exp_frame = exp_main.get_frame_width();
+             int height_exp_frame = exp_main.get_frame_height();
+             if (val <= Screen_WIDTH && tt_boss == 0)
+             {
+                 tt_boss = 1;
+                 stt_boss = true;
+
+             }
+             if (stt_boss == true)
+             {
+                 if (hpboss > 0)
+                 {
+
+
+
+                     bossObject.set_xpos(xposboss);
+                     bossObject.set_ypos(yposboss);
+                     bossObject.setMapXY(map.start_x, map.start_y);
+                     bossObject.DoPlayer(map);
+                     bossObject.Show(g_screen);
+                     bossObject.MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT, map,g_sound_bullet);
+
+
+
+
+
+                     bcol3 = SDLCommonfunc::CheckCollision(player.getRectframe(), bossObject.getRectframe());
+                     for (int i = 0; i < player.get_bullet_list().size(); i++)
                      {
-                         pos_listt.push_back(400 - 20 *pos_listt.size());
-                         
-                         
-                         hp.pos_list.push_back(400 - 20 * (pos_listt.size()-1));
-
-                         
-                         
-                         
-                         hpboss--;
-                         for (int ex = 0; ex < 8; ex++)
+                         if (hpboss <= 0) break;
+                         BulletObject* bulletp = player.get_bullet_list().at(i);
+                         bcol5 = SDLCommonfunc::CheckCollision(bulletp->getRect(), bossObject.getRectframe());
+                         if (bcol5)
                          {
-                             int x_pos = bulletp->getRect().x;
-                             int y_pos = bulletp->getRect().y;
+                             pos_listt.push_back(400 - 20 * pos_listt.size());
 
+
+                             hp.pos_list.push_back(400 - 20 * (pos_listt.size() - 1));
+
+
+
+
+                             hpboss--;
+                             for (int ex = 0; ex < 8; ex++)
+                             {
+                                 Mix_PlayChannel(-1, g_sound_exp[0], 0);
+                                 int x_pos = bulletp->getRect().x;
+                                 int y_pos = bulletp->getRect().y;
+                                 
+                                 exp_main.set_frame(ex);
+                                 exp_main.setRect(x_pos, y_pos);
+                                 exp_main.show(g_screen);
+                                 SDL_RenderPresent(g_screen);
+
+                             }
+                             player.RemoveBullet(i);
+                             if (hpboss == 0) {
+                                 break;
+
+
+                             }
+
+
+
+                         }
+
+                     }
+                     hp.setRect(100, 50);
+
+                     hp.Render3(g_screen);
+                     boss_item.setRect(0, 50);
+                     boss_item.Render2(g_screen);
+                     if (pos_listt.size() != 1)
+                     {
+                         for (int r = 0; r < pos_listt.size() - 1; r++)
+                         {
+                             hp_item.setRect(pos_listt[pos_listt.size() - 1 - r] + hp.rect.x, 50);
+
+                             hp_item.Render2(g_screen);
+                         }
+                     }
+                     bool checkk = false;
+                     if (player.x_pos + Screen_WIDTH >= xposboss) checkk = true;
+                     for (int i = 0; i < bossObject.get_bullet_list().size(); i++)
+                     {
+                         BulletObject* p_bullet = bossObject.get_bullet_list().at(i);
+
+                         bcol4 = SDLCommonfunc::CheckCollision(player.getRectframe(), p_bullet->getRect());
+                         if (bcol4)
+                         {
+                             bossObject.RemoveBullet(i);
+                         }
+                         if (checkk == false)  bossObject.RemoveBullet(i);
+
+                     }
+
+                     if ((bcol3 == true || bcol4 == true) && hpboss > 0)
+                     {
+
+                         player.hp--;
+                         for (int ex = 0; ex < 4; ex++)
+                         {
+                             Mix_PlayChannel(-1, g_sound_exp[0], 0);
+                             int x_pos = (player.getRect().x + player.width_frame * 0.5) - width_exp_frame * 0.5;
+                             int y_pos = (player.getRect().y + player.height_frame * 0.5) - height_exp_frame * 0.5;
+                            
                              exp_main.set_frame(ex);
                              exp_main.setRect(x_pos, y_pos);
                              exp_main.show(g_screen);
                              SDL_RenderPresent(g_screen);
 
                          }
-                         player.RemoveBullet(i);
-                         if (hpboss == 0) {
-                             break;
-
-
-                         }
-
-
-
-                     }
-                    
-                 }
-                 hp.setRect(100, 50);
-
-                 hp.Render3(g_screen);
-                 boss_item.setRect(0, 50);
-                 boss_item.Render2(g_screen);
-                 if (pos_listt.size() !=1)
-                 {
-                     for (int r = 0; r < pos_listt.size()-1; r++)
-                     {
-                         hp_item.setRect(pos_listt[pos_listt.size()-1-r]+hp.rect.x, 50);
-                        
-                         hp_item.Render2(g_screen);
-                     }
-                 }
-                 bool checkk = false;
-                 if (player.x_pos + Screen_WIDTH >= xposboss) checkk = true;
-                 for (int i = 0; i < bossObject.get_bullet_list().size(); i++)
-                 {
-                     BulletObject* p_bullet = bossObject.get_bullet_list().at(i);
-
-                     bcol4 = SDLCommonfunc::CheckCollision(player.getRectframe(), p_bullet->getRect());
-                     if (bcol4)
-                     {
-                         bossObject.RemoveBullet(i);
-                     }
-                     if (checkk == false)  bossObject.RemoveBullet(i);
-
-                 }
-
-                 if ((bcol3 == true || bcol4 == true) && hpboss > 0)
-                 {
-
-                     player.hp--;
-                     for (int ex = 0; ex < 4; ex++)
-                     {
-                         int x_pos = (player.getRect().x + player.width_frame * 0.5) - width_exp_frame * 0.5;
-                         int y_pos = (player.getRect().y + player.height_frame * 0.5) - height_exp_frame * 0.5;
-
-                         exp_main.set_frame(ex);
-                         exp_main.setRect(x_pos, y_pos);
-                         exp_main.show(g_screen);
-                         SDL_RenderPresent(g_screen);
-
-                     }
-                     if (player.hp > 0)
-                     {
-
-
-                         player.x_pos -= 300;
-                         player.y_pos -= 300;
-                         SDL_Delay(1000);
-                         player_power.Decrease();
-                         player_power.Render(g_screen);
-                         continue;
-                     }
-                     else
-                     {
-                         if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
+                         if (player.hp > 0)
                          {
 
-                             close();
-                             SDL_Quit();
-                             return 0;
+
+                             player.x_pos -= 300;
+                             player.y_pos -= 300;
+                             SDL_Delay(1000);
+                             player_power.Decrease();
+                             player_power.Render(g_screen);
+                             continue;
                          }
+                         else
+                         {
+                             lose = true;
+                             SDL_RenderClear(g_screen);
+                             back_ground4.Render(g_screen, NULL);
+
+                             SDL_RenderPresent(g_screen);
+                         }
+
+
                      }
-
-
-                 }
-             }
-             else
-             {
-                 
-                 SDL_RenderClear(g_screen);
-                 back_ground3.Render(g_screen, NULL);
-                 
-                 SDL_RenderPresent(g_screen);
-                 SDL_Delay(10000);
-                 
-                 }
-
-         }
-
-
-
-         for (int i = 0; i < list_threat.size(); i++)
-         {
-             ThreatsObject* p_threat = list_threat.at(i);
-
-             p_threat->setmapXY(map.start_x, map.start_y);
-             if (p_threat != NULL)
-             {
-                 if (p_threat->type_move_ == p_threat->FLY)
-                 {
-
-
-                     p_threat->impTypeMove(g_screen);
-                     p_threat->doPlayer2(map);
-                     vector<BulletObject*> tBullet_list = p_threat->get_bullet_list();
-                     for (int jj = 0; jj < tBullet_list.size(); jj++)
-                     {
-                         BulletObject* pt_bullet = tBullet_list.at(jj);
-
-                         pt_bullet->setMapXY(map.start_x, map.start_y);
-                     }
-                     p_threat->MakeBullet2(g_screen, Screen_WIDTH, Screen_HEIGHT, map);
-
-                     // cout<<  p_threat->rect.x << endl;
-                     p_threat->show2(g_screen);
-
-                 }
-                 else if(p_threat->type_move_ == p_threat->MOVE_IN_SPACE_THREAT)
-                 {
-                     p_threat->setmapXY(map.start_x, map.start_y);
-
-                     p_threat->impTypeMove(g_screen);
-                     p_threat->doPlayer(map);
-                     p_threat->MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT, map);
-                     
-                     p_threat->show3(g_screen);
                  }
                  else
                  {
-                    
-                     p_threat->setmapXY(map.start_x, map.start_y);
-                     if (p_threat->get_x_pos_() - 150 <= player.x_pos && p_threat->get_x_pos_() + 150 >= player.x_pos&&player.y_pos>=p_threat->get_y_pos_()-100)
-                     {
-                         
-                        
-                        
+                     win = true;
+                     SDL_RenderClear(g_screen);
+                     back_ground3.Render(g_screen, NULL);
 
-                           
-                         
+                     SDL_RenderPresent(g_screen);
+
+
+                 }
+
+             }
+
+
+
+             for (int i = 0; i < list_threat.size(); i++)
+             {
+                 ThreatsObject* p_threat = list_threat.at(i);
+
+                 p_threat->setmapXY(map.start_x, map.start_y);
+                 if (p_threat != NULL)
+                 {
+                     if (p_threat->type_move_ == p_threat->FLY)
+                     {
+
+
+                         p_threat->impTypeMove(g_screen);
+                         p_threat->doPlayer2(map);
+                         vector<BulletObject*> tBullet_list = p_threat->get_bullet_list();
+                         for (int jj = 0; jj < tBullet_list.size(); jj++)
+                         {
+                             BulletObject* pt_bullet = tBullet_list.at(jj);
+
+                             pt_bullet->setMapXY(map.start_x, map.start_y);
+                         }
+                         p_threat->MakeBullet2(g_screen, Screen_WIDTH, Screen_HEIGHT, map, g_sound_bullet);
+
+                         // cout<<  p_threat->rect.x << endl;
+                         p_threat->show2(g_screen);
+
+                     }
+                     else if (p_threat->type_move_ == p_threat->MOVE_IN_SPACE_THREAT)
+                     {
+                         p_threat->setmapXY(map.start_x, map.start_y);
+
+                         p_threat->impTypeMove(g_screen);
+                         p_threat->doPlayer(map);
+                         //  p_threat->MakeBullet(g_screen, Screen_WIDTH, Screen_HEIGHT, map);
+
+                         p_threat->show3(g_screen);
+                     }
+                     else
+                     {
+
+                         p_threat->setmapXY(map.start_x, map.start_y);
+                         if (p_threat->get_x_pos_() - 150 <= player.x_pos && p_threat->get_x_pos_() + 150 >= player.x_pos && player.y_pos >= p_threat->get_y_pos_() - 100)
+                         {
+
+
+
+
+
+
                              fire4.setmapXY(map.start_x, map.start_y);
-                           
-                             
+
+
                              fire4.setRect(p_threat->rect.x - 100, p_threat->rect.y - 200);
                              bool firec = SDLCommonfunc::CheckCollision(player.getRectframe(), fire4.getRectframe());
                              if (!firec)
                              {
+                                 Mix_PlayChannel(-1, g_sound_exp[4], 0);
                                  fire4.show4(g_screen, map);
                                  SDL_RenderPresent(g_screen);
                              }
                              if (firec)
                              {
-                                 if (player.hp>0)
+                                 if (player.hp > 0)
                                  {
-                                     
+
                                      fire4.setRect(player.rect.x - 100, player.rect.y - 200);
                                      for (int z = 0; z < 2; z++)
                                      {
+                                         Mix_PlayChannel(-1, g_sound_exp[4], 0);
                                          fire4.frame++;
                                          fire4.show4(g_screen, map);
                                          SDL_RenderPresent(g_screen);
@@ -1026,570 +1105,614 @@ vector<ThreatsObject*> MakeThreatList()
                                      p_threat->Free();
                                      list_threat.erase(list_threat.begin() + i);
                                      mark_val++;
-                                     
-                                     
-                                     
+
+
+
                                  }
                                  else
                                  {
-                                     if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
-                                     {
-                                         
-                                         close();
-                                         SDL_Quit();
-                                         return 0;
-                                     }
-                                 }
-                                 if (player.hp <= 0)
-                                 {
-                                     cout << player.hp<<"922" << endl;
-
-                                     if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
-                                     {
-
-                                         close();
-                                         SDL_Quit();
-                                         return 0;
-                                     }
-                                 }
-                                 
-                                 
-                             }
-
-                                 
-                         
-
-                         
-
-                     }
-                
-                     else {
-                         
-                         p_threat->show4(g_screen);
-                     }
-                     
-
-                 }
-                 SDL_Rect rect_player = player.getRectframe();
-                 bool bcol1 = false;
-                 bool ckhien1 = false;
-                 bool ckhien2 = false;
-                 vector<BulletObject*> tBullet_list = p_threat->get_bullet_list();
-                 for (int jj = 0; jj < tBullet_list.size(); jj++)
-                 {
-                     BulletObject* pt_bullet = tBullet_list.at(jj);
-
-                     pt_bullet->setMapXY(map.start_x, map.start_y);
-
-                     //  cout << pt_bullet->map_x << "   " << pt_bullet->map_y << endl;
-                     cout << player.hp << endl;
-                     if (pt_bullet != NULL)
-                     {
-                         bcol1 = SDLCommonfunc::CheckCollision(rect_player, pt_bullet->getRect());
-                         ckhien1 = SDLCommonfunc::CheckCollision(khienn.getRectframe(), pt_bullet->getRect());
-
-                         if (bcol1)
-                         {
-
-                             //p_threat->RemoveBullet(jj);
-                             break;
-                         }
-                     }
-                 }
-                 SDL_Rect rect_threat = p_threat->getRectframe();
-                 bool bcol2 = SDLCommonfunc::CheckCollision(rect_player, rect_threat);
-                 ckhien2 = SDLCommonfunc::CheckCollision(khienn.getRectframe(), rect_threat);
-
-
-
-                 if (khienn.status == 0) {
-                     if (bcol1 == true || bcol2 == true)
-                     {
-
-
-                         for (int ex = 0; ex < 4; ex++)
-                         {
-                             int x_pos = (player.getRect().x + player.width_frame * 0.5) - width_exp_frame * 0.5;
-                             int y_pos = (player.getRect().y + player.height_frame * 0.5) - height_exp_frame * 0.5;
-
-                             exp_main.set_frame(ex);
-                             exp_main.setRect(x_pos, y_pos);
-                             exp_main.show(g_screen);
-                             SDL_RenderPresent(g_screen);
-
-                         }
-                         player.hp--;
-                         if (player.hp>0)
-                         {
-
-
-                             player.x_pos -= 300;
-                             player.y_pos -= 300;
-                             SDL_Delay(1000);
-                             player_power.Decrease();
-                             player_power.Render(g_screen);
-                             continue;
-                         }
-                         else
-                         {
-                             if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
-                             {
-                                 p_threat->Free();
-                                 close();
-                                 SDL_Quit();
-                                 return 0;
-                             }
-                         }
-                     }
-                 }
-                 else
-                 {
-                     if (ckhien1 || ckhien2)
-                     {
-                         if (ckhien2)
-                         {
-                             p_threat->Free();
-                             list_threat.erase(list_threat.begin() + i);
-                             mark_val++;
-                         }
-
-                         for (int ex = 0; ex < 8; ex++)
-                         {
-                             int x_pos = (player.getRect().x + player.width_frame * 0.5) - width_exp_frame * 0.5;
-                             int y_pos = (player.getRect().y + player.height_frame * 0.5) - height_exp_frame * 0.5;
-
-                             exp_main.set_frame(ex);
-                             exp_main.setRect(x_pos, y_pos);
-                             exp_main.show(g_screen);
-                             SDL_RenderPresent(g_screen);
-
-                         }
-
-                     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                 }
-
-
-
-             }
-         }
-
-
-         vector<BulletObject*> bullet_arr = player.get_bullet_list();
-         for (int r = 0; r < bullet_arr.size(); r++)
-         {
-             BulletObject* p_bullet = bullet_arr.at(r);
-             if (p_bullet != NULL)
-             {
-                 for (int t = 0; t < list_threat.size(); t++)
-                 {
-                     ThreatsObject* p_threat = list_threat.at(t);
-                     if (p_threat != NULL)
-                     {
-                         SDL_Rect tRect;
-                         tRect.x = p_threat->getRect().x;
-                         tRect.y = p_threat->getRect().y;
-                         tRect.w = p_threat->get_width_frame_();
-                         tRect.h = p_threat->get_height_frame_();
-
-                         SDL_Rect bRect = p_bullet->getRect();
-                         bool bcol = SDLCommonfunc::CheckCollision(tRect, bRect);
-                         if (bcol)
-                         {
-                             mark_val++;
-                             for (int ex = 0; ex < 8; ex++)
-                             {
-                                 int frame_exp_width = exp_threat.get_frame_width();
-                                 int frame_exp_height = exp_threat.get_frame_height();
-                                 int x_pos = p_bullet->getRect().x - frame_exp_width * 0.5;
-                                 int y_pos = p_bullet->getRect().y - frame_exp_height * 0.5;
-                                 exp_threat.set_frame(ex);
-                                 exp_threat.setRect(x_pos, y_pos);
-                                 exp_threat.show(g_screen);
-                             }
-                             player.RemoveBullet(r);
-                             p_threat->Free();
-                             list_threat.erase(list_threat.begin() + t);
-                             mark_val++;
-                         }
-
-                     }
-                 }
-             }
-         }
-         if (player.x_pos>=1250&&fire1==false)
-         {      
-             fire11 = true;
-         }
-         else if (player.x_pos >= 1450)
-         {
-             fire11 = false;
-         }
-         if (fire11 == true)
-         {
-             warning.setRect(1120, 50);
-             warning.show(g_screen, map);
-         }
-         if (player.x_pos >= 1450)
-         {
-             
-             fire1 = true;
-
-         }
-         if (fire1 == true)
-         {
-             for (int i = 0; i < list_fire.size(); i++)
-             {
-
-                 fire* tmp = list_fire.at(i);
-
-                 if (tmp != NULL)
-                 {
-                     tmp->setmapXY(map.start_x, map.start_y);
-                     tmp->show(g_screen, map);
-                     bool bcol6 = SDLCommonfunc::CheckCollision(player.getRectframe(), tmp->getRectframe());
-
-
-
-                     if (bcol6 || tmp->CheckToMapX(map))
-                     {
-                         if (bcol6 == true&&khienn.status==0)
-                         { 
-                             player.hp--;
-                             if (player.hp > 0 <= 3)
-                             {
-                                 for (int i = 0; i < 12; i++)
-                                 {
-                                     exp_fire.set_frame(i);
-                                     exp_fire.setRect(player.getRect().x - 50, player.getRect().y - 50);
-                                     exp_fire.show(g_screen);
+                                     lose = true;
+                                     SDL_RenderClear(g_screen);
+                                     back_ground4.Render(g_screen, NULL);
 
                                      SDL_RenderPresent(g_screen);
                                  }
+                                 if (player.hp <= 0)
+                                 {
+                                     lose = true;
+                                     SDL_RenderClear(g_screen);
+                                     back_ground4.Render(g_screen, NULL);
+
+                                     SDL_RenderPresent(g_screen);
+                                 }
+
+
+                             }
+
+
+
+
+
+
+                         }
+
+                         else {
+
+                             p_threat->show4(g_screen);
+                         }
+
+
+                     }
+                     SDL_Rect rect_player = player.getRectframe();
+                     bool bcol1 = false;
+                     bool ckhien1 = false;
+                     bool ckhien2 = false;
+                     vector<BulletObject*> tBullet_list = p_threat->get_bullet_list();
+                     for (int jj = 0; jj < tBullet_list.size(); jj++)
+                     {
+                         BulletObject* pt_bullet = tBullet_list.at(jj);
+
+                         pt_bullet->setMapXY(map.start_x, map.start_y);
+
+                         //  cout << pt_bullet->map_x << "   " << pt_bullet->map_y << endl;
+                        
+                         if (pt_bullet != NULL)
+                         {
+                             bcol1 = SDLCommonfunc::CheckCollision(rect_player, pt_bullet->getRect());
+                             ckhien1 = SDLCommonfunc::CheckCollision(khienn.getRectframe(), pt_bullet->getRect());
+
+                             if (bcol1)
+                             {
+
+                                 //p_threat->RemoveBullet(jj);
+                                 break;
+                             }
+                         }
+                     }
+                     SDL_Rect rect_threat = p_threat->getRectframe();
+                     bool bcol2 = SDLCommonfunc::CheckCollision(rect_player, rect_threat);
+                     ckhien2 = SDLCommonfunc::CheckCollision(khienn.getRectframe(), rect_threat);
+
+
+
+                     if (khienn.status == 0) {
+                         if (bcol1 == true || bcol2 == true)
+                         {
+
+
+                             for (int ex = 0; ex < 4; ex++)
+                             {
+                                 int x_pos = (player.getRect().x + player.width_frame * 0.5) - width_exp_frame * 0.5;
+                                 int y_pos = (player.getRect().y + player.height_frame * 0.5) - height_exp_frame * 0.5;
+                                 Mix_PlayChannel(-1, g_sound_exp[0], 0);
+                                 exp_main.set_frame(ex);
+                                 exp_main.setRect(x_pos, y_pos);
+                                 exp_main.show(g_screen);
+                                 SDL_RenderPresent(g_screen);
+
+                             }
+                             player.hp--;
+                             if (player.hp > 0)
+                             {
+
 
                                  player.x_pos -= 300;
                                  player.y_pos -= 300;
                                  SDL_Delay(1000);
                                  player_power.Decrease();
                                  player_power.Render(g_screen);
-                                 list_fire.clear();
                                  continue;
                              }
                              else
                              {
-                                 if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
-                                 {
+                                 lose = true;
+                                 SDL_RenderClear(g_screen);
+                                 back_ground4.Render(g_screen, NULL);
 
-                                     close();
-                                     SDL_Quit();
-                                     return 0;
-                                 }
+                                 SDL_RenderPresent(g_screen);
                              }
                          }
-                         tmp->Free();
-                        // list_fire.erase(list_fire.begin() + i);
-
-                         for (int i = 0; i < 12; i++)
+                     }
+                     else
+                     {
+                         if (ckhien1 || ckhien2)
                          {
+                             if (ckhien2)
+                             {
+                                 p_threat->Free();
+                                 list_threat.erase(list_threat.begin() + i);
+                                 mark_val++;
+                             }
 
-                             exp_fire.set_frame(i);
-                             exp_fire.setRect(tmp->getRect().x, tmp->getRect().y);
-                             exp_fire.show(g_screen);
-                             SDL_RenderPresent(g_screen);
+                             for (int ex = 0; ex < 8; ex++)
+                             {
+                                 int x_pos = (player.getRect().x + player.width_frame * 0.5) - width_exp_frame * 0.5;
+                                 int y_pos = (player.getRect().y + player.height_frame * 0.5) - height_exp_frame * 0.5;
+                                 Mix_PlayChannel(-1, g_sound_exp[0], 0);
+                                 exp_main.set_frame(ex);
+                                 exp_main.setRect(x_pos, y_pos);
+                                 exp_main.show(g_screen);
+                                 SDL_RenderPresent(g_screen);
+
+                             }
+
                          }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                      }
 
+
+
                  }
              }
-             
-         }
-         if (player.x_pos >= 9200 && fire2 == false)
-         {
-             fire22 = true;
-         }
-         else if (player.x_pos >= 1450)
-         {
-             fire22 = false;
-         }
-         if (fire22 == true)
-         {
-             warning.setRect(1120, 50);
-             warning.show(g_screen, map);
-         }
-         if (player.x_pos >= 9400)
-         {
-             fire2 = true;
-         }
-         if (fire2 == true)
-         {
-             for (int i = 0; i < list_fire2.size(); i++)
+
+
+             vector<BulletObject*> bullet_arr = player.get_bullet_list();
+             for (int r = 0; r < bullet_arr.size(); r++)
+             {
+                 BulletObject* p_bullet = bullet_arr.at(r);
+                 if (p_bullet != NULL)
+                 {
+                     for (int t = 0; t < list_threat.size(); t++)
+                     {
+                         ThreatsObject* p_threat = list_threat.at(t);
+                         if (p_threat != NULL)
+                         {
+                             SDL_Rect tRect;
+                             tRect.x = p_threat->getRect().x;
+                             tRect.y = p_threat->getRect().y;
+                             tRect.w = p_threat->get_width_frame_();
+                             tRect.h = p_threat->get_height_frame_();
+
+                             SDL_Rect bRect = p_bullet->getRect();
+                             bool bcol = SDLCommonfunc::CheckCollision(tRect, bRect);
+                             if (bcol && p_threat->type_move_ != p_threat->STATIC_THREAT)
+                             {
+                                 mark_val++;
+                                 for (int ex = 0; ex < 8; ex++)
+                                 {
+                                     Mix_PlayChannel(-1, g_sound_exp[0], 0);
+                                     int frame_exp_width = exp_threat.get_frame_width();
+                                     int frame_exp_height = exp_threat.get_frame_height();
+                                     int x_pos = p_bullet->getRect().x - frame_exp_width * 0.5;
+                                     int y_pos = p_bullet->getRect().y - frame_exp_height * 0.5;
+                                     exp_threat.set_frame(ex);
+                                     exp_threat.setRect(x_pos, y_pos);
+                                     exp_threat.show(g_screen);
+                                 }
+                                 player.RemoveBullet(r);
+                                 p_threat->Free();
+                                 list_threat.erase(list_threat.begin() + t);
+                                 mark_val++;
+                             }
+                             else if (bcol && p_threat->type_move_ == p_threat->STATIC_THREAT)
+
+                             {
+                                 player.RemoveBullet(r);
+                                 if (p_bullet->bullet_dir == p_bullet->DIR_LEFT)
+                                 {
+                                     mark_val++;
+                                     for (int ex = 0; ex < 8; ex++)
+                                     {
+                                         Mix_PlayChannel(-1, g_sound_exp[0], 0);
+                                         int frame_exp_width = exp_threat.get_frame_width();
+                                         int frame_exp_height = exp_threat.get_frame_height();
+                                         int x_pos = p_bullet->getRect().x - frame_exp_width * 0.5;
+                                         int y_pos = p_bullet->getRect().y - frame_exp_height * 0.5;
+                                         exp_threat.set_frame(ex);
+                                         exp_threat.setRect(x_pos, y_pos);
+                                         exp_threat.show(g_screen);
+                                     }
+
+                                     p_threat->Free();
+                                     list_threat.erase(list_threat.begin() + t);
+                                     mark_val++;
+                                 }
+                             }
+
+                         }
+                     }
+                 }
+             }
+             if (player.x_pos >= 1250 && fire1 == false)
+             {
+                 fire11 = true;
+             }
+             else if (player.x_pos >= 1450)
+             {
+                 fire11 = false;
+             }
+             if (fire11 == true)
+             {
+                 warning.setRect(1120, 50);
+                 warning.show(g_screen, map);
+             }
+             if (player.x_pos >= 1450)
              {
 
-                 
-                 fire* tmp = list_fire2.at(i);
+                 fire1 = true;
 
-                 if (tmp != NULL)
+             }
+             if (fire1 == true)
+             {
+                 for (int i = 0; i < list_fire.size(); i++)
                  {
-                     tmp->setmapXY(map.start_x, map.start_y);
-                     tmp->show(g_screen, map);
 
-                     bool bcol7 = SDLCommonfunc::CheckCollision(player.getRectframe(), tmp->getRectframe());
+                     fire* tmp = list_fire.at(i);
 
-
-
-                     if (bcol7 || tmp->CheckToMapX(map))
+                     if (tmp != NULL)
                      {
-                         if (bcol7 == true)
-                         {
-                            
-                             if (player.hp > 0)
-                             {
-                                 for (int i = 0; i < 12; i++)
-                                 {
-                                     exp_fire.set_frame(i);
-                                     exp_fire.setRect(player.getRect().x - 50, player.getRect().y - 50);
-                                     exp_fire.show(g_screen);
+                         tmp->setmapXY(map.start_x, map.start_y);
+                         tmp->show(g_screen, map);
+                         bool bcol6 = SDLCommonfunc::CheckCollision(player.getRectframe(), tmp->getRectframe());
 
-                                     SDL_RenderPresent(g_screen);
-                                 }
-                                 if (khienn.status == 0)
+
+
+                         if (bcol6 || tmp->CheckToMapX(map))
+                         {
+                             if (bcol6 == true && khienn.status == 0)
+                             {
+                                 player.hp--;
+                                 if (player.hp > 0 <= 3)
                                  {
-                                     player.hp--;
+                                     for (int i = 0; i < 12; i++)
+                                     {
+                                         Mix_PlayChannel(-1, g_sound_exp[3], 0);
+                                         exp_fire.set_frame(i);
+                                         exp_fire.setRect(player.getRect().x - 50, player.getRect().y - 50);
+                                         exp_fire.show(g_screen);
+
+                                         SDL_RenderPresent(g_screen);
+                                     }
+
                                      player.x_pos -= 300;
                                      player.y_pos -= 300;
                                      SDL_Delay(1000);
                                      player_power.Decrease();
                                      player_power.Render(g_screen);
-                                     list_fire2.clear();
-                                     break;
+                                     list_fire.clear();
+                                     continue;
                                  }
-                                 list_fire2.clear();
-                             }
-                             else
-                             {
-                                 if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
+                                 else
                                  {
+                                     lose = true;
+                                     SDL_RenderClear(g_screen);
+                                     back_ground4.Render(g_screen, NULL);
 
-                                     close();
-                                     SDL_Quit();
-                                     return 0;
+                                     SDL_RenderPresent(g_screen);
                                  }
                              }
+                             tmp->Free();
+                             // list_fire.erase(list_fire.begin() + i);
+
+                             for (int i = 0; i < 12; i++)
+                             {
+                                 Mix_PlayChannel(-1, g_sound_exp[3], 0);
+
+                                 exp_fire.set_frame(i);
+                                 exp_fire.setRect(tmp->getRect().x, tmp->getRect().y);
+                                 exp_fire.show(g_screen);
+                                 SDL_RenderPresent(g_screen);
+                             }
+
+
                          }
-                         tmp->Free();
-                      //   list_fire2.erase(list_fire2.begin() + i);
-
-                         for (int i = 0; i < 12; i++)
-                         {
-
-                             exp_fire.set_frame(i);
-                             exp_fire.setRect(tmp->x_pos, tmp->y_pos);
-                             exp_fire.show(g_screen);
-                             SDL_RenderPresent(g_screen);
-                         }
-
 
                      }
                  }
+
              }
-
-         }
-
-
-
-
-         string str_time = "Time: ";
-         Uint32 time_val2;
-         Uint32 time_val = SDL_GetTicks() / 1000;
-         if (khienn.status == 0) {
-
-             time_val2 = SDL_GetTicks() / 1000;
-             time_khienn = double(time_val2);
-         }
-         string str_khien = "";
-
-
-         Uint32 val_time = 200 - time_val;
-         if (val_time <= 0)
-         {
-             if (MessageBox(NULL, L"GAME OVER", L"Info", MB_OK | MB_ICONSTOP) == IDOK)
+             if (player.x_pos >= 9200 && fire2 == false)
              {
-                 is_quit = true;
-                 break;
-
+                 fire22 = true;
              }
-         }
-         else
-         {
-             string str_val = to_string(val_time);
-             str_time += str_val;
-
-             time_game.SetText(str_time);
-             time_game.LoadFromRenderText(font_time, g_screen);
-             time_game.RenderText(g_screen, Screen_WIDTH - 200, 15);
-
-         }
-
-         if (khienn.status == 1) {
-             Uint32 time_val_khien = SDL_GetTicks() / 1000 - time_khienn;
-
-
-             Uint32 val_khien = 15 - time_val_khien;
-
-             if (val_khien >= 1000)
+             else if (player.x_pos >= 1450)
              {
-                 khienn.status = 0;
+                 fire22 = false;
              }
-             else {
-
-                 string str_val2 = to_string(val_khien);
-                 str_khien += str_val2;
-                 str_khien += "s";
-
-                 time_khien.SetText(str_khien);
-                 time_khien.LoadFromRenderText(font_time, g_screen);
-                 time_khien.RenderText(g_screen, 40, 60);
-             }
-         }
-         string val_str_mark = to_string(mark_val);
-         string strMark("Mark: ");
-         strMark += val_str_mark;
-
-         mark_game.SetText(strMark);
-         mark_game.LoadFromRenderText(font_time, g_screen);
-         mark_game.RenderText(g_screen, Screen_WIDTH * 0.5 - 50, 15);
-
-         int money_count = player.getMoneyCount();
-         string money_str = to_string(money_count);
-         money_game.SetText(money_str);
-         money_game.LoadFromRenderText(font_time, g_screen);
-         money_game.RenderText(g_screen, Screen_WIDTH * 0.5 - 250, 15);
-
-
-         for (int i = 0; i < list_threat.size(); i++)
-         {
-             ThreatsObject* tmp = list_threat.at(i);
-             if (tmp->type_move_ == ThreatsObject::FLY)
+             if (fire22 == true)
              {
-              
+                 warning.setRect(1120, 50);
+                 warning.show(g_screen, map);
              }
-         }
-         
-         if (thu == 1)
-         {
-             SDL_RenderClear(g_screen);
-             back_ground2.Render(g_screen, NULL);
-             SDL_RenderPresent(g_screen);
-
-
-
-             thu = 0;
-
-             for (int i = 0; i < list_threat.size(); i++)
+             if (player.x_pos >= 9400)
              {
-                 ThreatsObject* tmp = list_threat.at(i);
-                 if (tmp != NULL)
+                 fire2 = true;
+             }
+             if (fire2 == true)
+             {
+                 for (int i = 0; i < list_fire2.size(); i++)
                  {
 
 
-                     if (tmp->rect.x >= fire_item.rect.x - Screen_WIDTH / 2 && tmp->rect.x <= fire_item.rect.x + Screen_WIDTH / 2)
+                     fire* tmp = list_fire2.at(i);
+
+                     if (tmp != NULL)
+                     {
+                         tmp->setmapXY(map.start_x, map.start_y);
+                         tmp->show(g_screen, map);
+
+                         bool bcol7 = SDLCommonfunc::CheckCollision(player.getRectframe(), tmp->getRectframe());
+
+
+
+                         if (bcol7 || tmp->CheckToMapX(map))
+                         {
+                             if (bcol7 == true)
+                             {
+
+                                 if (player.hp > 0)
+                                 {
+                                     for (int i = 0; i < 12; i++)
+                                     {
+                                         Mix_PlayChannel(-1, g_sound_exp[3], 0);
+                                         exp_fire.set_frame(i);
+                                         exp_fire.setRect(player.getRect().x - 50, player.getRect().y - 50);
+                                         exp_fire.show(g_screen);
+
+                                         SDL_RenderPresent(g_screen);
+                                     }
+                                     if (khienn.status == 0)
+                                     {
+                                         player.hp--;
+                                         player.x_pos -= 300;
+                                         player.y_pos -= 300;
+                                         SDL_Delay(1000);
+                                         player_power.Decrease();
+                                         player_power.Render(g_screen);
+                                         list_fire2.clear();
+                                         break;
+                                     }
+                                     list_fire2.clear();
+                                 }
+                                 else
+                                 {
+                                     lose = true;
+                                     SDL_RenderClear(g_screen);
+                                     back_ground4.Render(g_screen, NULL);
+
+                                     SDL_RenderPresent(g_screen);
+                                 }
+                             }
+                             tmp->Free();
+                             //   list_fire2.erase(list_fire2.begin() + i);
+
+                             for (int i = 0; i < 12; i++)
+                             {
+
+                                 exp_fire.set_frame(i);
+                                 exp_fire.setRect(tmp->x_pos, tmp->y_pos);
+                                 exp_fire.show(g_screen);
+                                 SDL_RenderPresent(g_screen);
+                             }
+
+
+                         }
+                     }
+                 }
+
+             }
+
+             if (win == false && lose == false) {
+
+
+                 string str_time = "Time: ";
+                 Uint32 time_val2;
+                 Uint32 time_val3;
+                 Uint32 time_val = SDL_GetTicks() / 1000;
+                 if (khienn.status == 0) {
+
+                     time_val2 = SDL_GetTicks() / 1000;
+                     time_khienn = double(time_val2);
+                 }
+                 if (player.tia3 == false) {
+
+                     time_val3 = SDL_GetTicks() / 1000;
+                     time_dann = double(time_val3);
+                 }
+                 string str_khien = "";
+                 string str_dan = "";
+                 
+                 Uint32 val_time = 200 - time_val;
+                 if (val_time <= 0)
+                 {
+                     lose = true;
+                     SDL_RenderClear(g_screen);
+                     back_ground4.Render(g_screen, NULL);
+
+                     SDL_RenderPresent(g_screen);
+                 }
+                 else
+                 {
+                     string str_val = to_string(val_time);
+                     str_time += str_val;
+
+                     time_game.SetText(str_time);
+                     time_game.LoadFromRenderText(font_time, g_screen);
+                     time_game.RenderText(g_screen, Screen_WIDTH - 200, 15);
+
+                 }
+
+                 if (khienn.status == 1) {
+                     Uint32 time_val_khien = SDL_GetTicks() / 1000 - time_khienn;
+
+
+                     Uint32 val_khien = 15 - time_val_khien;
+
+                     if (val_khien >= 1000)
+                     {
+                         khienn.status = 0;
+                     }
+                     else {
+
+                         string str_val2 = to_string(val_khien);
+                         str_khien += str_val2;
+                         str_khien += "s";
+
+                         time_khien.SetText(str_khien);
+                         time_khien.LoadFromRenderText(font_time, g_screen);
+                         time_khien.RenderText(g_screen, 40, 60);
+                     }
+                 }
+                 if (player.tia3 == true) {
+                     Uint32 time_val_dan = SDL_GetTicks() / 1000 - time_dann;
+
+
+                     Uint32 val_dan = 15 - time_val_dan;
+
+                     if (val_dan >= 1000)
+                     {
+                         player.tia3 = false;
+                     }
+                     else {
+
+                         string str_val3 = to_string(val_dan);
+                         str_dan += str_val3;
+                         str_dan += "s";
+
+                         time_dan.SetText(str_dan);
+                         time_dan.LoadFromRenderText(font_time, g_screen);
+                         time_dan.RenderText(g_screen, 40, 120);
+                     }
+                 }
+                 string val_str_mark = to_string(mark_val);
+                 string strMark("Mark: ");
+                 strMark += val_str_mark;
+
+                 mark_game.SetText(strMark);
+                 mark_game.LoadFromRenderText(font_time, g_screen);
+                 mark_game.RenderText(g_screen, Screen_WIDTH * 0.5 - 50, 15);
+
+                 int money_count = player.getMoneyCount();
+                 string money_str = to_string(money_count);
+                 money_game.SetText(money_str);
+                 money_game.LoadFromRenderText(font_time, g_screen);
+                 money_game.RenderText(g_screen, Screen_WIDTH * 0.5 - 250, 15);
+
+
+                 for (int i = 0; i < list_threat.size(); i++)
+                 {
+                     ThreatsObject* tmp = list_threat.at(i);
+                     if (tmp->type_move_ == ThreatsObject::FLY)
                      {
 
-                         ExplosionObject* exp_firetmp1 = new ExplosionObject();
-                         exp_firetmp1->loadImg3("img//exp2.png", g_screen, 1);
-                         exp_firetmp1->set_clip3();
-                         for (int jj = 0; jj < 12; jj++)
-                         {
-                             exp_firetmp1->set_frame(jj);
-                             exp_firetmp1->setRect(tmp->getRect().x - 50, tmp->getRect().y);
-                             exp_firetmp1->show(g_screen);
-                             SDL_Delay(50);
-                             SDL_RenderPresent(g_screen);
-                         }
-                        
+                     }
+                 }
 
-                         exp_list.push_back(exp_firetmp1);
-                         tmp->Free();
-                         list_threat.erase(list_threat.begin() + i);
-                         mark_val++;
-                         i--;
+                 if (thu == 1)
+                 {
+                     SDL_RenderClear(g_screen);
+                     back_ground2.Render(g_screen, NULL);
+                     SDL_RenderPresent(g_screen);
+
+
+
+                     thu = 0;
+
+                     for (int i = 0; i < list_threat.size(); i++)
+                     {
+                         ThreatsObject* tmp = list_threat.at(i);
+                         if (tmp != NULL)
+                         {
+
+
+                             if (tmp->rect.x >= fire_item.rect.x - Screen_WIDTH / 2 && tmp->rect.x <= fire_item.rect.x + Screen_WIDTH / 2)
+                             {
+
+                                 ExplosionObject* exp_firetmp1 = new ExplosionObject();
+                                 exp_firetmp1->loadImg3("img//exp2.png", g_screen, 1);
+                                 exp_firetmp1->set_clip3();
+                                 for (int jj = 0; jj < 12; jj++)
+                                 {
+                                     Mix_PlayChannel(-1, g_sound_exp[1], 0);
+                                     exp_firetmp1->set_frame(jj);
+                                     exp_firetmp1->setRect(tmp->getRect().x - 50, tmp->getRect().y);
+                                     exp_firetmp1->show(g_screen);
+                                     SDL_Delay(50);
+                                     SDL_RenderPresent(g_screen);
+                                 }
+
+
+                                 exp_list.push_back(exp_firetmp1);
+                                 tmp->Free();
+                                 list_threat.erase(list_threat.begin() + i);
+                                 mark_val++;
+                                 i--;
+
+                             }
+
+
+                         }
+                     }
+                 }
+             }
+
+                 /*for (int i = 0; i < exp_list.size(); i++)
+                 {
+                     ExplosionObject* exp_firetmp = exp_list.at(i);
+                     for (int i = 0; i < 12; i++)
+                     {
+
+
+                         exp_firetmp->set_frame(i);
+
+                         exp_firetmp->show(g_screen);
+                         SDL_Delay(100);
+                         SDL_RenderPresent(g_screen);
 
                      }
 
-                     
+                 }*/
 
+             }
+
+
+
+
+
+
+
+             j++;
+             SDL_RenderPresent(g_screen);
+
+             int real_time = fps_time.getTicks();
+             int time_one_frame = 1000 / fps;
+             if (real_time < time_one_frame) {
+                 int delay_time = time_one_frame - real_time;
+                 if (delay_time >= 0) {
+                     SDL_Delay(delay_time);
                  }
              }
-            
-             /*for (int i = 0; i < exp_list.size(); i++)
-             {
-                 ExplosionObject* exp_firetmp = exp_list.at(i);
-                 for (int i = 0; i < 12; i++)
-                 {
-
-                   
-                     exp_firetmp->set_frame(i);
-
-                     exp_firetmp->show(g_screen);
-                     SDL_Delay(100);
-                     SDL_RenderPresent(g_screen);
-
-                 }
-
-             }*/
 
          }
-         
+         for (int i = 0; i < list_threat.size(); i++)
+         {
+             ThreatsObject* p_threat = list_threat.at(i);
+             if (p_threat)
+             {
+                 p_threat->Free();
+                 p_threat = nullptr;
+             }
+         }
+         for (auto threat : list_threat) {
+             delete threat;
+         }
 
-
-
+         list_threat.clear();
+         close();
+         return 0;
      
- 
-       
-         j++;
-        SDL_RenderPresent(g_screen);
-
-        int real_time = fps_time.getTicks();
-        int time_one_frame = 1000 / fps;
-        if (real_time < time_one_frame) {
-            int delay_time = time_one_frame - real_time;
-            if (delay_time >= 0) {
-                SDL_Delay(delay_time);
-            }
-        }
-
-    }
-    for (int i = 0; i < list_threat.size(); i++)
-    {
-        ThreatsObject* p_threat = list_threat.at(i);
-        if (p_threat)
-        {
-            p_threat->Free();
-            p_threat = nullptr;
-        }
-    }
-    for (auto threat : list_threat) {
-        delete threat;
-    }
-   
-    list_threat.clear();
-    close();
-    return 0;
-   
 
 }

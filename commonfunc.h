@@ -12,9 +12,13 @@ using namespace std;
 static SDL_Window* g_window = NULL;
 static SDL_Renderer* g_screen = NULL;
 static SDL_Event g_event;
+static Mix_Chunk* g_sound_bullet[5];
+static Mix_Chunk* g_sound_exp[5];
+static Mix_Chunk* item[5];
+
 
 //Screen
-const int fps = 40;
+const int fps =40;
 const int Screen_WIDTH = 1280;
 const int Screen_HEIGHT = 640;
 

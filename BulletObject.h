@@ -79,12 +79,13 @@ public:
 	void LoadImgBullet2(SDL_Renderer* des);
 	bool CheckToMapX(Map map_data);
 	void tinhMap(Map& map_data);
+	unsigned int bullet_dir;
 		
 private:
 	int x_val_;
 	int y_val_;
 	bool is_move;
-	unsigned int bullet_dir;
+	
 	unsigned int bullet_type;
 	
 

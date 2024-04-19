@@ -683,12 +683,12 @@ void ThreatsObject::MakeBullet(SDL_Renderer* screen, const int& x_limit, const i
 		}
 	}
 }
-void ThreatsObject::MakeBullet2(SDL_Renderer* screen, const int& x_limit, const int& y_limit, Map& mapp)
+void ThreatsObject::MakeBullet2(SDL_Renderer* screen, const int& x_limit, const int& y_limit, Map& mapp,Mix_Chunk* b[2])
 {
 	for (int i = 0; i < bullet_list_.size(); i++)
 	{
 		BulletObject* a = bullet_list_.at(i);
-
+		
 		if (a != NULL)
 		{
 			if (a->get_is_move()&&a->vc==false)

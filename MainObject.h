@@ -6,7 +6,7 @@
 #include"time.h"
 class mainObject :public baseObject {
 public:
-	mainObject();
+	mainObject(SDL_Renderer* des);
 	~mainObject();
 	int width_frame;
 	int height_frame;
@@ -14,7 +14,7 @@ public:
 		WALK_RIGHT = 0,
 	    WALK_LEFT = 1,
 	};
-	bool LoadImg(string path, SDL_Renderer* screen);
+	bool LoadImg(string path, SDL_Renderer* screen,int status);
 	void show(SDL_Renderer* des);
 	void xulihd(SDL_Event event, SDL_Renderer* screen);
 	void set_clip();
@@ -39,10 +39,11 @@ public:
 	void set_comeback_time(const int& cb_time)
 	{
 		come_back_time = cb_time;
-	}
+	} int hp;
 	double x_pos;
 	double y_pos;
 	double player_speed;
+	bool on_ground = false;
 	int getMoneyCount() const { return money_count; }
 private: 
 	int money_count = 0;
@@ -58,7 +59,7 @@ private:
 	input input_type;
 	int frame;
 	
-	bool on_ground = false;
+	
 	int map_x;
 	int map_y;
 	int come_back_time;

@@ -19,15 +19,18 @@ public:
 	enum BulletDir {
 		DIR_RIGHT = 20,
 		DIR_LEFT = 21,
-		DIR_UP =  22,
+		DIR_UP = 22,
 		DIR_UP_LEFT = 23,
 		DIR_UP_RIGHT = 24,
-		DIR_DOWN_LEFT= 25,
+		DIR_DOWN_LEFT = 25,
 		DIR_DOWN_RIGHT = 26,
+		DIR_ALL = 27,
+		DIR_DOWN = 28,
 	};
 	enum BulletType {
 		SPHERE_BULLET= 50,
 		LASER_BULLET= 51,
+		THREAT_BULLET=52,
 
 	};
 
@@ -58,7 +61,7 @@ public:
 		return is_move;
 	}
 	void xuliMove(const int& x_border, const int& y_border, Map& mapp);
-	void xuliMove2(const int& x_border, const int& y_border);
+	void xuliMove2(const int& x_border, const int& y_border, Map& mapp);
 	void set_bullet_dir(const unsigned int& bulletDir) {
 		bullet_dir = bulletDir;
 	}
@@ -72,7 +75,8 @@ public:
 	unsigned int get_buller_type() {
 		return bullet_type;
 	}
-	void LoadImgBullet(SDL_Renderer* screen);
+	void LoadImgBullet(SDL_Renderer* screen,int stt);
+	void LoadImgBullet2(SDL_Renderer* des);
 	bool CheckToMapX(Map map_data);
 	void tinhMap(Map& map_data);
 		

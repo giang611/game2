@@ -20,24 +20,39 @@ BulletObject::~BulletObject() {
 }
 
 void BulletObject::xuliMove(const int& x_border, const int& y_border,Map& mapp) {
+	
 	if (bullet_dir == DIR_RIGHT)
 	{
-		if (CheckToMapX(mapp)) vc = true;
-		else {
-			rect.x = x_pos - map_x;
-			vc = false;
-		}
-	
-		
-		if (rect.x > x_border)
+		if (CheckToMapX(mapp))
 		{
-			is_move = false;
+			vc = true;
 		}
+		
+		else {
+			rect.x = x_pos-map_x;
+			vc = false;
+			
+			
+		}
+				
+		if (rect.x> x_border)
+		{
+			
+			is_move = false;
+			
+		}
+		if (rect.x <=0)
+		{
+
+			is_move = false;
+
+		}
+		//rect.x += 20;
 	}
 	else if (bullet_dir == DIR_LEFT)
 	{
 		if (CheckToMapX(mapp)) vc = true;
-		else {// rect.x += x_val_;
+		else {
 			rect.x = x_pos - map_x;
 		vc = false; }
 		
@@ -109,38 +124,416 @@ void BulletObject::xuliMove(const int& x_border, const int& y_border,Map& mapp) 
 			is_move = false;
 		}
 	}
-	
-	
-	
-}
-void BulletObject::xuliMove2(const int& x_border, const int& y_border) {
-	 if (bullet_dir == DIR_LEFT)
+	else if (bullet_dir == DIR_DOWN_RIGHT)
 	{
-		rect.x -= x_val_;
-		if (rect.x < x_border)
+		rect.x += x_val_;
+		if (rect.x < 0)
 		{
 			is_move = false;
 		}
-
+		rect.y += y_val_;
+		if (rect.y > y_border)
+		{
+			is_move = false;
+		}
 	}
 	
+	
+}
+void BulletObject::xuliMove2(const int& x_border, const int& y_border, Map& mapp) {
+	if (bullet_dir == DIR_RIGHT)
+	{
+		if (CheckToMapX(mapp)==true)
+		{ 
+			vc = true;
+			rect.x = x_pos-map_x;
+			
+			
+		}
+
+		else {
+			is_move = true;
+			rect.x = x_pos-map_x;
+			
+			vc = false;
+			
+
+		}
+	
+
+		if (rect.x > x_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x <= 0)
+		{
+
+			is_move = false;
+
+		}
+		
+	}
+	else if (bullet_dir == DIR_LEFT)
+	{
+		
+		if (CheckToMapX(mapp) == true)
+		{
+
+			vc = true;
+			rect.x = x_pos - map_x;
+
+
+		}
+
+		else {
+			is_move = true;
+			rect.x = x_pos - map_x;
+		    
+		    vc = false;
+
+
+		}
+		//cout << rect.x << endl;
+
+		if (rect.x > x_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x <= 0)
+		{
+
+			is_move = false;
+
+		}
+
+	}
+	else if (bullet_dir == DIR_UP)
+	{
+		if (CheckToMapX(mapp) == true)
+		{
+
+			vc = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+
+		}
+
+		else {
+			is_move = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+			vc = false;
+
+
+		}
+
+
+		if (rect.y > y_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.y <= 0)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x > x_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x <= 0)
+		{
+
+			is_move = false;
+
+		}
+	}
+	else if (bullet_dir == DIR_UP_LEFT)
+	{
+		if (CheckToMapX(mapp) == true)
+		{
+
+			vc = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+
+		}
+
+		else {
+			is_move = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+			vc = false;
+
+
+		}
+
+
+		if (rect.y > y_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.y <= 0)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x > x_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x <= 0)
+		{
+
+			is_move = false;
+
+		}
+	}
+	else if (bullet_dir == DIR_UP_RIGHT)
+	{
+		if (CheckToMapX(mapp) == true)
+		{
+
+			vc = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+
+		}
+
+		else {
+			is_move = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+			vc = false;
+
+
+		}
+
+
+		if (rect.y > y_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.y <= 0)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x > x_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x <= 0)
+		{
+
+			is_move = false;
+
+		}
+	}
+	else if (bullet_dir == DIR_DOWN_LEFT)
+	{
+		if (CheckToMapX(mapp) == true)
+		{
+
+			vc = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+
+		}
+
+		else {
+			is_move = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+			vc = false;
+
+
+		}
+
+
+		if (rect.y > y_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.y <= 0)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x > x_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x <= 0)
+		{
+
+			is_move = false;
+
+		}
+	}
+	
+	else if (bullet_dir == DIR_DOWN_RIGHT)
+	{
+		if (CheckToMapX(mapp) == true)
+		{
+
+			vc = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+
+		}
+
+		else {
+			is_move = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+			vc = false;
+
+
+		}
+
+
+		if (rect.y > y_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.y <= 0)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x > x_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x <= 0)
+		{
+
+			is_move = false;
+
+		}
+	}
+	else if (bullet_dir == DIR_DOWN)
+	{
+		if (CheckToMapX(mapp) == true)
+		{
+
+			vc = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+
+		}
+
+		else {
+			is_move = true;
+			rect.x = x_pos - map_x;
+			rect.y = y_pos - map_y;
+			vc = false;
+
+
+		}
+
+
+		if (rect.y > y_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.y <= 0)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x > x_border)
+		{
+
+			is_move = false;
+
+		}
+		if (rect.x <= 0)
+		{
+
+			is_move = false;
+
+		}
+
+	}
+
 }
 
-void BulletObject::LoadImgBullet(SDL_Renderer* des){
+void BulletObject::LoadImgBullet(SDL_Renderer* des,int stt){
+	tt = stt;
 	if (bullet_type == SPHERE_BULLET) 
 	{
-		loadImg("img//spherebullet.png", des);
+		loadImg("img//spherebullet.png", des,tt);
+	}
+	else if(bullet_type == LASER_BULLET)
+	{
+		loadImg("img//laserbullet.png", des,tt);
 	}
 	else
 	{
-		loadImg("img//laserbullet.png", des);
+		loadImg("img//danvip.png", des, tt);
 	}
+	
 
+
+}
+void BulletObject::LoadImgBullet2(SDL_Renderer* des) {
+	
+	if (bullet_type == SPHERE_BULLET)
+	{
+		loadImg2("img//spherebullet.png", des);
+		height_frame = rect.h;
+		width_frame = rect.w;
+	}
+	else if (bullet_type == LASER_BULLET)
+	{
+		loadImg2("img//laserbullet.png", des);
+	}
+	else
+	{
+		loadImg2("img//danvip.png", des);
+		height_frame = rect.h;
+		width_frame = rect.w;
+		
+	}
 
 }
 bool BulletObject::CheckToMapX(Map map_data)
 {
-
+	
 	int x1 = 0;
 	int x2 = 0;
 	int y1 = 0;
@@ -164,8 +557,8 @@ bool BulletObject::CheckToMapX(Map map_data)
 
 					x_pos = x2 * TILE_SIZE;
 					x_pos -= width_frame + 1;
-					x_val_ = 0;
-					is_move = false;
+					//x_val_ = 0;
+					
 					return true;
 
 
@@ -187,8 +580,8 @@ bool BulletObject::CheckToMapX(Map map_data)
 			{
 				if (val1 != 0 || val2 != 0) {
 					x_pos = (x1 + 1) * TILE_SIZE;
-					x_val_ = 0;
-					is_move = false;
+					//x_val_ = 0;
+					
 					return true;
 
 				}
@@ -213,8 +606,8 @@ bool BulletObject::CheckToMapX(Map map_data)
 				if (val1 != 0 || val2 != 0) {
 					y_pos = y2 * TILE_SIZE;
 					y_pos -= height_frame + 1;
-					y_val_ = 0;
-					is_move = false;
+					//y_val_ = 0;
+					
 					return true;
 				
 				}
@@ -231,8 +624,8 @@ bool BulletObject::CheckToMapX(Map map_data)
 
 				{
 					y_pos = (y1 + 1) * TILE_SIZE;
-					y_val_ = 0;
-					is_move = false;
+					//y_val_ = 0;
+					
 					return true;
 				}
 			}

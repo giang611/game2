@@ -24,7 +24,7 @@ public:
 	int get_y_pos() { return y_pos; }
 
 	void Show(SDL_Renderer* des);
-	bool loadImg(string path,SDL_Renderer* screen);
+	bool loadImg(string path,SDL_Renderer* screen,int status);
 	void set_clips();
 
 	int get_width_frame() const { return width_frame; }
@@ -42,6 +42,8 @@ public:
 		bullet_list = an_list;
 	}
 	void InitBullet(SDL_Renderer* screen);
+	void InitBullet1(SDL_Renderer* screen);
+	void InitBullet2(SDL_Renderer* screen);
 	void MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit, Map& mapp);
 	void RemoveBullet(const int& idx);
 	int getHp() { return hp; }

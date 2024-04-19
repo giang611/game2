@@ -11,19 +11,20 @@ BossObject::BossObject() {
 	think_time = 0;
 	map_x = 0;
 	map_y = 0;
-	hp = 10;
+	hp = 20;
 }
 BossObject::~BossObject() {
 
 }
-bool BossObject::loadImg(string path, SDL_Renderer* screen)
+bool BossObject::loadImg(string path, SDL_Renderer* screen,int status)
 {
-	bool ret = baseObject::loadImg(path, screen);
+	tt = status;
+	bool ret = baseObject::loadImg(path, screen,status);
 
 	if(ret == true)
 	{
-		width_frame = rect.w / 32;
-		height_frame = rect.h;
+		width_frame = rect1[tt].w / 32;
+		height_frame = rect1[tt].h;
 	}
 	return ret;
 }
@@ -41,6 +42,7 @@ void BossObject::set_clips()
 
 void BossObject::Show(SDL_Renderer* screen)
 {
+	object = object1[tt];
 	if (think_time == 0)
 	{
 		rect.x = x_pos - map_x;
@@ -181,41 +183,102 @@ void BossObject::CheckToMap(Map& map_data)
 
 void BossObject::InitBullet(SDL_Renderer* screen)
 {
+	
 	BulletObject* p_bullet = new BulletObject();
-	bool ret = p_bullet->loadImg("img//boss bullet.png",screen);
+	bool ret = p_bullet->loadImg2("img//boss bullet.png",screen);
+	p_bullet->height_frame = p_bullet->rect.h;
+	p_bullet->width_frame = p_bullet->rect.w;
 	if (ret)
 	{
 		p_bullet->set_bullet_dir(BulletObject::DIR_LEFT);
 		p_bullet->set_is_move(true);
-		p_bullet->setRect(rect.x - 50, rect.y + height_frame - 30);
-		p_bullet->set_x_val(15);
+		p_bullet->x_pos = rect.x - 50+map_x;
+		p_bullet->y_pos = rect.y + height_frame - 30+map_y;
+		p_bullet->setRect(rect.x - 50, rect.y + height_frame);
+		//cout << p_bullet->x_pos << "      " << p_bullet->y_pos << endl;
+		//cout << rect.x << "  " << rect.y << endl;
+		p_bullet->set_x_val(-35);
+		bullet_list.push_back(p_bullet);
+	}
+
+}
+void BossObject::InitBullet1(SDL_Renderer* screen)
+{
+
+	BulletObject* p_bullet = new BulletObject();
+	bool ret = p_bullet->loadImg2("img//boss bullet.png", screen);
+	p_bullet->height_frame = p_bullet->rect.h;
+	p_bullet->width_frame = p_bullet->rect.w;
+	if (ret)
+	{
+		p_bullet->set_bullet_dir(BulletObject::DIR_UP_LEFT);
+		p_bullet->set_is_move(true);
+		p_bullet->x_pos = rect.x - 50 + map_x;
+		p_bullet->y_pos = rect.y + height_frame - 50 + map_y;
+
+		p_bullet->setRect(rect.x - 50, rect.y + height_frame);
+		//cout << p_bullet->x_pos << "      " << p_bullet->y_pos << endl;
+		//cout << rect.x << "  " << rect.y << endl;
+		p_bullet->set_x_val(-35);
+		p_bullet->set_y_val(-15);
+		bullet_list.push_back(p_bullet);
+	}
+
+}
+void BossObject::InitBullet2(SDL_Renderer* screen)
+{
+
+	BulletObject* p_bullet = new BulletObject();
+	bool ret = p_bullet->loadImg2("img//boss bullet.png", screen);
+	p_bullet->height_frame = p_bullet->rect.h;
+	p_bullet->width_frame = p_bullet->rect.w;
+	if (ret)
+	{
+		p_bullet->set_bullet_dir(BulletObject::DIR_DOWN_LEFT);
+		p_bullet->set_is_move(true);
+		p_bullet->x_pos = rect.x - 50 + map_x;
+		p_bullet->y_pos = rect.y + height_frame  + map_y;
+		p_bullet->setRect(rect.x - 50, rect.y + height_frame);
+		//cout << p_bullet->x_pos << "      " << p_bullet->y_pos << endl;
+		//cout << rect.x << "  " << rect.y << endl;
+		p_bullet->set_x_val(-35);
+		p_bullet->set_y_val(15);
 		bullet_list.push_back(p_bullet);
 	}
 
 }
 
+
 void BossObject::MakeBullet(SDL_Renderer* des, const int& x_limit, const int& y_limit,  Map& mapp) {
 	if (frame == 18)
 	{
 		InitBullet(des);
+		InitBullet1(des);
+		InitBullet2(des);
+		
 	}
 	for (int i = 0; i < bullet_list.size(); i++)
 	{
 		BulletObject* p_bullet = bullet_list.at(i);
+		
 		if (p_bullet != NULL)
+
 		{
-			if (p_bullet->get_is_move())
+			if (p_bullet->get_is_move()&&p_bullet->vc==false)
 			{
-				p_bullet->xuliMove(x_limit, y_limit,mapp);
-				p_bullet->Render(des);
+				p_bullet->setMapXY(map_x, map_y);
+				p_bullet->xuliMove2(x_limit, y_limit,mapp);
+				p_bullet->Render2(des);
 			}
-			else 
+			else if(p_bullet->get_is_move()==false||p_bullet->vc==true)
 			{
+				
 				p_bullet->Free();
 				bullet_list.erase(bullet_list.begin() + i);
-				
+
 				if (p_bullet != NULL)
 				{
+					
 					delete p_bullet;
 					p_bullet = NULL;
 				}

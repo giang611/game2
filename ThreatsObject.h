@@ -12,8 +12,9 @@ public:
 	~ThreatsObject();
 	
 	enum Typemove {
-		STATIC_THREAT=0,
-		MOVE_IN_SPACE_THREAT =1,
+		STATIC_THREAT = 0,
+		MOVE_IN_SPACE_THREAT = 1,
+		FLY = 2,
 		
 
 	};
@@ -61,10 +62,17 @@ public:
 		 input_type_.left = ipleft;
 	 }
 	 void impTypeMove(SDL_Renderer* screen);
+	 bool LoadImg3(string path, SDL_Renderer* screen, int status);
 	 void setClip();
-	 bool LoadImg(string path, SDL_Renderer* screen);
+	 void setClip2();
+	 bool LoadImg(string path, SDL_Renderer* screen,int status);
+	 bool LoadImg2(string path, SDL_Renderer* screen, int status);
 	 void show(SDL_Renderer* des);
+	 void show3(SDL_Renderer* des);
+	 void show4(SDL_Renderer* des);
+	 void show2(SDL_Renderer* des);
 	 void doPlayer(Map& gMap);
+	 void doPlayer2(Map& gmap);
 	 void checktoMap(Map& gMap);
 	 void set_bullet_list(vector<BulletObject*>& bl_list)
 	 {
@@ -77,10 +85,19 @@ public:
 
 	 }
 	 void InitBullet(BulletObject* bullet, SDL_Renderer* screen);
+	 void InitBullet2(BulletObject* p_bullet, SDL_Renderer* screen);
+    void InitBullet3(BulletObject* p_bullet, SDL_Renderer* screen);
+	 void InitBullet4(BulletObject* p_bullet, SDL_Renderer* screen);
+	 void InitBullet5(BulletObject* p_bullet, SDL_Renderer* screen);
+	 void InitBullet6(BulletObject* p_bullet, SDL_Renderer* screen);
+	 void InitBullet7(BulletObject* p_bullet, SDL_Renderer* screen);
+	 void InitBullet8(BulletObject* p_bullet, SDL_Renderer* screen);
 	 void MakeBullet(SDL_Renderer* screen, const int& x_limit, const int& y_limit, Map& mapp);
+	 void MakeBullet2(SDL_Renderer* screen, const int& x_limit, const int& y_limit, Map& mapp);
 	 void RemoveBullet(const int& idx);
 	 SDL_Rect getRectframe();
-	 
+	 int type_move_;
+	 input input_type_;
 private :
 	int map_x_;
 	int map_y_;
@@ -94,10 +111,10 @@ private :
 	int width_frame_;
 	int height_frame_;
 	int frame_;
-	int type_move_;
+	
 	int animation_a_;
 	int animation_b_;
-	input input_type_;
+	
 	vector<BulletObject*> bullet_list_;
 
 };

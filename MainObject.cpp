@@ -1,10 +1,11 @@
 #include"MainObject.h"
+ 
 
-mainObject::mainObject() {
+mainObject::mainObject(SDL_Renderer* des) {
 	frame = 0;
 	x_val = 0;
 	y_val = 0;
-	x_pos = 0;
+	x_pos =20100;
 	y_pos = 0;
 	width_frame = 0;
 	height_frame = 0;
@@ -16,7 +17,12 @@ mainObject::mainObject() {
 	map_x = 0;
 	map_y = 0;
 	player_speed = 8;
+	tt = 1;
+	hp=3;
+	
+	
 }
+
 void mainObject::doPlayer(Map& map_data) {
 	
 	if (come_back_time == 0) {
@@ -73,11 +79,13 @@ SDL_Rect mainObject::getRectframe()
 	rectt.h = height_frame;
 	return rectt;
 }
-bool mainObject::LoadImg(string path, SDL_Renderer* screen) {
-	bool ret = baseObject::loadImg(path, screen);
+bool mainObject::LoadImg(string path, SDL_Renderer* screen,int stt) {
+	tt = stt;
+	bool ret = baseObject::loadImg(path, screen,tt);
 	if (ret == true) {
-		width_frame = rect.w / 8;
-		height_frame = rect.h;
+		
+		width_frame = rect1[tt].w / 8;
+		height_frame = rect1[tt].h;
 	}
 	return ret;
 }
@@ -90,10 +98,13 @@ void mainObject::set_clip() {
 			frame_clip[i].h = height_frame;
 		}
 	}
+     
 
 }
 void mainObject::show(SDL_Renderer* des) {
-	
+	object = object1[tt];
+	//rect.x = rect1[tt].x;
+	//rect.y = rect1[tt].y;
 	UpdateImagePlayer(des);
 	if (input_type.left == 1 || input_type.right == 1) {
 		frame++;
@@ -112,7 +123,7 @@ void mainObject::show(SDL_Renderer* des) {
 	SDL_Rect renderQuad= { rect.x,rect.y,width_frame,height_frame };
 	SDL_RenderCopy(des, object, current_clip, &renderQuad);
 }
-void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
+void mainObject::xulihd(SDL_Event event, SDL_Renderer* des) {
 
 	if (event.type == SDL_KEYDOWN) {
 		switch (event.key.keysym.sym) {
@@ -120,7 +131,7 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 			status = WALK_RIGHT;
 			input_type.right = 1;
 			input_type.left = 0;
-			UpdateImagePlayer(screen);
+			UpdateImagePlayer(des);
 			
 		}
 					   break;
@@ -131,7 +142,7 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 			status = WALK_LEFT;
 			input_type.left = 1;
 			input_type.right = 0;
-			UpdateImagePlayer(screen);
+			UpdateImagePlayer(des);
 		}
 					  break;
 		
@@ -143,6 +154,7 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 		case SDLK_RIGHT: {
 			status = WALK_RIGHT;
 			input_type.right = 0;
+			UpdateImagePlayer(des);
 		}
 					   break;
 
@@ -151,6 +163,7 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 		case SDLK_LEFT: {
 			status = WALK_LEFT;
 			input_type.left = 0;
+			UpdateImagePlayer(des);
 		}
 					  break;
 
@@ -163,12 +176,12 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 			BulletObject* a = new BulletObject();
 			a->set_bullet_type(a->SPHERE_BULLET);
 			//a->setMapXY(map_x, map_y);
-			a->LoadImgBullet(screen);
+			a->LoadImgBullet(des,tt);
 			if (status == WALK_LEFT && input_type.left == 0&&input_type.right==0)
 			{
 				a->set_bullet_dir(a->DIR_LEFT);
 				a->setRect(x_pos-map_x , y_pos-map_y + 0.3 * height_frame);
-				a->set_x_val(-20);
+				a->set_x_val(-30);
 				a->set_x_pos(this->rect.x+map_x);
 				a->set_y_pos(this->rect.y + 0.3 * height_frame+map_y);
 			}
@@ -177,7 +190,7 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 				
 				a->set_bullet_dir(a->DIR_LEFT);
 				a->setRect(x_pos-map_x , y_pos-map_y + 0.3 * height_frame);
-				a->set_x_val(-20);
+				a->set_x_val(-30);
 				a->set_x_pos(this->rect.x+map_x);
 				a->set_y_pos(this->rect.y + 0.3 * height_frame+map_y);
 				//a->setMapXY(map_x, map_y);
@@ -188,7 +201,7 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* screen) {
 				
 				a->set_bullet_dir(a->DIR_RIGHT);
 				a->setRect(x_pos-map_x + width_frame - 20, y_pos-map_y + 0.3 * height_frame);
-				a->set_x_val(15);
+				a->set_x_val(30);
 				a->set_x_pos(this->rect.x + width_frame - 20 + map_x);
 				a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
 				//a->setMapXY(map_x, map_y);
@@ -357,31 +370,44 @@ void mainObject::checktoMap(Map& map_data) {
 	}
 
 
-
+	
 void mainObject::IncreaseMoney() {
 	money_count++;
+	
 }
 void mainObject::UpdateImagePlayer(SDL_Renderer* des) {
 	if (on_ground == true) {
 		if (input_type.left==1) {
-			LoadImg("img//player_left.png",des);
+			tt = 2;
+			object = object1[tt];
+			//loadImg("img//player_left.png", des);
 		}
 		else if(input_type.right==1) {
-			LoadImg("img//player_right.png",des);
+			tt = 1;
+			object = object1[tt];
+			//LoadImg("img//player_right.png",des);
 		}
-		else if(status==WALK_RIGHT) LoadImg("img//player_right.png", des);
-		else if (status == WALK_LEFT) LoadImg("img//player_left.png", des);
+		else if (status == WALK_RIGHT) { tt = 1; object = object1[tt]; }
+		else if (status == WALK_LEFT) {
+			tt = 2;	object = object1[tt];
+		}
 	}
 	else {
 		if (input_type.left==1) {
-			LoadImg("img//jum_left.png", des);
-
+			tt = 4;
+			object = object1[tt];
+			
 		}
 		else if(input_type.right==1){
-		LoadImg("img//jum_right.png", des);
+			tt = 3;
+			object = object1[tt];
 		}
-		else if(status==WALK_RIGHT) LoadImg("img//jum_right.png", des);
-
+		else if (status == WALK_RIGHT) {
+			tt = 3; object = object1[tt];
+		}
+		else if (status == WALK_LEFT) {
+			tt = 4; object = object1[tt];
+		}
 	}
 
 

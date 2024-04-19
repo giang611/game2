@@ -137,8 +137,10 @@
     <ClCompile Include="commonfunc.cpp" />
     <ClCompile Include="BulletObject.cpp" />
     <ClCompile Include="ExplosionObject.cpp" />
+    <ClCompile Include="fire.cpp" />
     <ClCompile Include="game_map.cpp" />
     <ClCompile Include="Geometric.cpp" />
+    <ClCompile Include="khien.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main2.cpp" />
     <ClCompile Include="MainObject.cpp" />
@@ -153,8 +155,10 @@
     <ClInclude Include="commonfunc.h" />
     <ClInclude Include="BulletObject.h" />
     <ClInclude Include="ExplosionObject.h" />
+    <ClInclude Include="fire.h" />
     <ClInclude Include="game_map.h" />
     <ClInclude Include="Geometric.h" />
+    <ClInclude Include="khien.h" />
     <ClInclude Include="MainObject.h" />
     <ClInclude Include="PlayerPower..h" />
     <ClInclude Include="TextObject.h" />

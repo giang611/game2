@@ -43,7 +43,7 @@ void Gamemap::Loadmap(string name) {
 			fopen_s(&f, file, "rb");
 			if (f == NULL) continue;
 			fclose(f);
-			tilemat[i].loadImg(file, screen);
+			tilemat[i].loadImg(file, screen,tilemat[i].tt);
 			
 		}
 	}
@@ -66,6 +66,10 @@ void Gamemap::Loadmap(string name) {
 			for (int j = x1; j < x2; j += TILE_SIZE) {
 				int val = gamemap.tile[map_y_][map_x_];
 				if (val > 0) {
+					
+				//	tilemat[val].object = tilemat[val].object1[tilemat[val].tt];
+				//	tilemat[val].rect.w = tilemat[val].rect1[tilemat[val].tt].w;
+				//	tilemat[val].rect.h = tilemat[val].rect1[tilemat[val].tt].h;
 					tilemat[val].setRect(j, i);
 					tilemat[val].Render(screen);
 				}

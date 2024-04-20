@@ -52,7 +52,7 @@ bool Initdata() {
         g_sound_exp[4] = Mix_LoadWAV("expth.wav");
         item[0] = Mix_LoadWAV("coin.wav");
         item[1] = Mix_LoadWAV("coin2.wav");
-
+        item[2] = Mix_LoadWAV("nhacnen.wav");
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     g_window = SDL_CreateWindow("game cua toi",
         SDL_WINDOWPOS_UNDEFINED,
@@ -87,7 +87,9 @@ bool Initdata() {
 
 bool showMenu()
 {
-   
+    
+    Mix_PlayChannel(-1, item[2], -1);
+    
     bool g_menu = menu.loadImg("img//menu.png", g_screen,1);
     menu.Render(g_screen, NULL);
     const int kitem = 2;
@@ -116,7 +118,7 @@ bool showMenu()
     text_menu[1].RenderText(g_screen, pos_arr[1].x, pos_arr[1].y);
     while (true)
     {
-       
+        
 
            while (SDL_PollEvent(&m_event))
            {
@@ -689,6 +691,7 @@ vector<ThreatsObject*> MakeThreatList()
              player.xulihd(g_event, g_screen, g_sound_bullet);
 
          }
+         
          if (lose == true)
          {
 

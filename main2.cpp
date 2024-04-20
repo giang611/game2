@@ -747,7 +747,7 @@ vector<ThreatsObject*> MakeThreatList()
                      khienn.show(g_screen, map);
                  }
              }
-             //cout << player.x_pos <<"     "<< player.y_pos << endl;
+             
              if (khienn.status == 1) {
                  khien_item2.setRect(0, 40);
                  khien_item2.Render(g_screen, NULL);
@@ -840,7 +840,7 @@ vector<ThreatsObject*> MakeThreatList()
              }
              if (dan33 == false) {
                  dan3.setmapXY(map.start_x, map.start_y);
-                 dan3.setRect(1000 - dan3.map_x_, 200 - dan3.map_y_);
+                 dan3.setRect(9933 - dan3.map_x_, 191 - dan3.map_y_);
                  dan3.show(g_screen, map);
                  
              }
@@ -854,7 +854,7 @@ vector<ThreatsObject*> MakeThreatList()
                  bool bcolit = SDLCommonfunc::CheckCollision(player.getRectframe(), dan3.getRectframe());
                  if (bcolit == true)
                  {
-                     cout << "1" << endl;
+                    
                      dan33 = true; player.tia3 = true;
                  }
              }
@@ -976,7 +976,7 @@ vector<ThreatsObject*> MakeThreatList()
 
                      }
 
-                     if ((bcol3 == true || bcol4 == true) && hpboss > 0)
+                     if ((bcol3 == true || bcol4 == true) && hpboss > 0&&khienn.status==0)
                      {
 
                          player.hp--;
@@ -1310,7 +1310,7 @@ vector<ThreatsObject*> MakeThreatList()
 
                              {
                                  player.RemoveBullet(r);
-                                 if (p_bullet->bullet_dir == p_bullet->DIR_LEFT)
+                                 if (p_bullet->bullet_dir == p_bullet->DIR_LEFT||p_bullet->bullet_dir==p_bullet->DIR_UP_LEFT)
                                  {
                                      mark_val++;
                                      for (int ex = 0; ex < 8; ex++)

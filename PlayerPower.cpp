@@ -23,6 +23,9 @@ void PlayerPower::Init(SDL_Renderer * screen,int stt) {
 	AddPos(20);
 	AddPos(60);
 	AddPos(100);
+	AddPos(140);
+	AddPos(180);
+	
 	
 }
 

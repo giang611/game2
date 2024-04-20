@@ -5,7 +5,7 @@ mainObject::mainObject(SDL_Renderer* des) {
 	frame = 0;
 	x_val = 0;
 	y_val = 0;
-	x_pos =0;
+	x_pos =20000;
 	y_pos = 0;
 	width_frame =0;
 	height_frame = 0;
@@ -18,7 +18,7 @@ mainObject::mainObject(SDL_Renderer* des) {
 	map_y = 0;
 	player_speed = 8;
 	tt = 1;
-	hp=3;
+	hp=5;
 	tia3 = false;
 	
 }

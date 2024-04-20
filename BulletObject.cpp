@@ -127,12 +127,20 @@ void BulletObject::xuliMove(const int& x_border, const int& y_border,Map& mapp) 
 	{
 		rect.x = x_pos - map_x;
 		rect.y = y_pos - map_y;
+		if (rect.x < 0)
+		{
+			is_move = false;
+		}
 		if (rect.x > x_border)
 		{
 			is_move = false;
 		}
 		
 		if (rect.y < 0)
+		{
+			is_move = false;
+		}
+		if (rect.y > y_border)
 		{
 			is_move = false;
 		}
@@ -157,20 +165,7 @@ void BulletObject::xuliMove(const int& x_border, const int& y_border,Map& mapp) 
 			}
 		}
 	}
-	else if (bullet_dir == DIR_UP_RIGHT)
-	{
-		rect.x = x_pos - map_x;
-		rect.y = y_pos - map_y;
-		if (rect.x > x_border)
-		{
-			is_move = false;
-		}
-		
-		if (rect.y > y_border)
-		{
-			is_move = false;
-		}
-	}
+	
 	else if (bullet_dir == DIR_DOWN_RIGHT)
 	{
 		rect.x = x_pos - map_x;

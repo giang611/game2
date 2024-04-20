@@ -252,7 +252,7 @@ vector<ThreatsObject*> MakeThreatList()
     }
     ThreatsObject* threats_objs = new ThreatsObject[20];
     ThreatsObject* fly = new ThreatsObject[15];
-    for(int i = 1; i < 12; i++)
+    for(int i = 1; i < 13; i++)
     {
         ThreatsObject* fly = new ThreatsObject[15];
         ThreatsObject* p_threat = (fly + i);
@@ -317,7 +317,11 @@ vector<ThreatsObject*> MakeThreatList()
                 p_threat->set_x_pos_(16227 + 1800);
                 p_threat->set_y_pos_(80);
             }
-           
+            else if (i == 12)
+            {
+                p_threat->set_x_pos_(2650+200);
+                p_threat->set_y_pos_(100);
+            }
 
 
             BulletObject* p_bullet = new BulletObject();
@@ -336,7 +340,7 @@ vector<ThreatsObject*> MakeThreatList()
             p_threat->InitBullet7(p_bullet7, g_screen);
             BulletObject* p_bullet8 = new BulletObject();
             p_threat->InitBullet8(p_bullet8, g_screen);
-            // cout << p_threat->get_bullet_list().at(0)->rect.x << "            " << p_threat->get_bullet_list().at(0)->rect.y << endl;
+           
             list_threats.push_back(p_threat);
         }
     }
@@ -568,13 +572,7 @@ vector<ThreatsObject*> MakeThreatList()
              ktmp->y_pos = 383.8;
          }
          
-         else if (i == 1)
-         {
-             ktmp->LoadImg("img//khien2.png", g_screen, 1);
-             ktmp->set_clip2();
-             ktmp->x_pos = 6600;
-             ktmp->y_pos = 383.8;
-         }
+        
          else if (i == 2)
          {
              ktmp->LoadImg("img//khien2.png", g_screen, 1);
@@ -756,7 +754,7 @@ vector<ThreatsObject*> MakeThreatList()
                  khienn.setRect(player.getRect().x - 14, player.getRect().y - 11);
                  khienn.show(g_screen, map);
              }
-             for (int i = 0; i < 2; i++)
+             for (int i = 0; i < 3; i++)
              {
                  khien* tmp = heart.at(i);
                  if (i == 0)
@@ -779,6 +777,17 @@ vector<ThreatsObject*> MakeThreatList()
                          tmp->show(g_screen, map);
                      }
                  }
+                 else if (i == 2)
+                 {
+                     if (tmp->heart_tt == 0)
+                     {
+
+                         tmp->setmapXY(map.start_x, map.start_y);
+                         tmp->setRect(6600 - tmp->map_x_, 383.8 - tmp->map_y_);
+                         tmp->show(g_screen, map);
+                     }
+                 }
+                
              }
 
              if (fire_tt == false) {
@@ -810,7 +819,7 @@ vector<ThreatsObject*> MakeThreatList()
 
                  fire_tt2 = true;
              }
-             for (int i = 0; i < 2; i++)
+             for (int i = 0; i < 3; i++)
              {
                  khien* heartt = heart.at(i);
                  bool bcolheart = SDLCommonfunc::CheckCollision(player.getRectframe(), heartt->getRectframe());
@@ -1525,7 +1534,7 @@ vector<ThreatsObject*> MakeThreatList()
                  string str_khien = "";
                  string str_dan = "";
                  
-                 Uint32 val_time = 200 - time_val;
+                 Uint32 val_time = 300 - time_val;
                  if (val_time <= 0)
                  {
                      lose = true;
@@ -1659,31 +1668,9 @@ vector<ThreatsObject*> MakeThreatList()
                  }
              }
 
-                 /*for (int i = 0; i < exp_list.size(); i++)
-                 {
-                     ExplosionObject* exp_firetmp = exp_list.at(i);
-                     for (int i = 0; i < 12; i++)
-                     {
-
-
-                         exp_firetmp->set_frame(i);
-
-                         exp_firetmp->show(g_screen);
-                         SDL_Delay(100);
-                         SDL_RenderPresent(g_screen);
-
-                     }
-
-                 }*/
+                 
 
              }
-
-
-
-
-
-
-
              j++;
              SDL_RenderPresent(g_screen);
 
@@ -1706,9 +1693,7 @@ vector<ThreatsObject*> MakeThreatList()
                  p_threat = nullptr;
              }
          }
-         for (auto threat : list_threat) {
-             delete threat;
-         }
+        
 
          list_threat.clear();
          close();

@@ -5,7 +5,7 @@ mainObject::mainObject(SDL_Renderer* des) {
 	frame = 0;
 	x_val = 0;
 	y_val = 0;
-	x_pos =20000;
+	x_pos =10000;
 	y_pos = 0;
 	width_frame =0;
 	height_frame = 0;
@@ -180,15 +180,15 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* des,Mix_Chunk* bullet_sou
 			
 			a->LoadImgBullet(des,tt);
 			BulletObject* b = new BulletObject();
-			b->set_bullet_type(a->SPHERE_BULLET);
+			b->set_bullet_type(a->LASER_BULLET);
 
 			b->LoadImgBullet(des, tt);
 			BulletObject* c = new BulletObject();
-			c->set_bullet_type(a->SPHERE_BULLET);
+			c->set_bullet_type(a->LASER_BULLET);
 
 			c->LoadImgBullet(des, tt);
 			BulletObject* d = new BulletObject();
-			d->set_bullet_type(a->SPHERE_BULLET);
+			d->set_bullet_type(a->LASER_BULLET);
 
 			d->LoadImgBullet(des, tt);
 			BulletObject* e = new BulletObject();
@@ -241,15 +241,15 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* des,Mix_Chunk* bullet_sou
 			{
 				if (status == WALK_LEFT && input_type.left == 0 && input_type.right == 0)
 				{
-					a->set_bullet_dir(a->DIR_UP_LEFT);
-					a->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
-					a->set_x_val(-30);
+					d->set_bullet_dir(a->DIR_UP_LEFT);
+					d->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					d->set_x_val(-30);
 					
-					a->set_x_pos(this->rect.x + map_x);
-					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
-					a->set_is_move(true);
+					d->set_x_pos(this->rect.x + map_x);
+					d->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					d->set_is_move(true);
 
-					bullet_list.push_back(a);
+					bullet_list.push_back(d);
 					b->set_bullet_dir(b->DIR_UP);
 					b->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
 				
@@ -276,15 +276,15 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* des,Mix_Chunk* bullet_sou
 				else if (input_type.left == 1)
 				{
 
-					a->set_bullet_dir(a->DIR_UP_LEFT);
-					a->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
-					a->set_x_val(-30);
-					a->set_y_val(-30);
-					a->set_x_pos(this->rect.x + map_x);
-					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
-					a->set_is_move(true);
+					d->set_bullet_dir(a->DIR_UP_LEFT);
+					d->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					d->set_x_val(-30);
+					d->set_y_val(-30);
+					d->set_x_pos(this->rect.x + map_x);
+					d->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					d->set_is_move(true);
 
-					bullet_list.push_back(a);
+					bullet_list.push_back(d);
 					b->set_bullet_dir(b->DIR_UP);
 					b->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
 
@@ -309,15 +309,15 @@ void mainObject::xulihd(SDL_Event event, SDL_Renderer* des,Mix_Chunk* bullet_sou
 				else
 				{
 
-					a->set_bullet_dir(a->DIR_UP_LEFT);
-					a->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
-					a->set_x_val(30);
-					a->set_y_val(5);
-					a->set_x_pos(this->rect.x + map_x);
-					a->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
-					a->set_is_move(true);
+					d->set_bullet_dir(a->DIR_UP_LEFT);
+					d->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
+					d->set_x_val(30);
+					d->set_y_val(5);
+					d->set_x_pos(this->rect.x + map_x);
+					d->set_y_pos(this->rect.y + 0.3 * height_frame + map_y);
+					d->set_is_move(true);
 
-					bullet_list.push_back(a);
+					bullet_list.push_back(d);
 					b->set_bullet_dir(b->DIR_UP);
 					b->setRect(x_pos - map_x, y_pos - map_y + 0.3 * height_frame);
 

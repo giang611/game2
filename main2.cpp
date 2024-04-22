@@ -209,7 +209,7 @@ vector<ThreatsObject*> MakeThreatList()
 
 
     ThreatsObject* dynamic_threats = new ThreatsObject[20];
-    for (int i = 0; i < 14; i++)
+    for (int i = 0; i < 15; i++)
     {      
         ThreatsObject* p_threat = (dynamic_threats + i);
         if (p_threat != NULL)
@@ -322,7 +322,8 @@ vector<ThreatsObject*> MakeThreatList()
                 p_threat->set_x_pos_(2650+200);
                 p_threat->set_y_pos_(100);
             }
-
+           
+            
 
             BulletObject* p_bullet = new BulletObject();
             p_threat->InitBullet(p_bullet, g_screen);
@@ -1052,7 +1053,7 @@ vector<ThreatsObject*> MakeThreatList()
                          }
                          p_threat->MakeBullet2(g_screen, Screen_WIDTH, Screen_HEIGHT, map, g_sound_bullet);
 
-                         // cout<<  p_threat->rect.x << endl;
+                         cout << player.x_pos << " " << player.y_pos << endl;
                          p_threat->show2(g_screen);
 
                      }

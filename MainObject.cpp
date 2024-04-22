@@ -5,7 +5,7 @@ mainObject::mainObject(SDL_Renderer* des) {
 	frame = 0;
 	x_val = 0;
 	y_val = 0;
-	x_pos =10000;
+	x_pos =0;
 	y_pos = 0;
 	width_frame =0;
 	height_frame = 0;

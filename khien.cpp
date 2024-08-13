@@ -1,4 +1,4 @@
-#include"khien.h"
+1#include"khien.h"
 #include<vector>
 khien::khien()
 {
